@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLOOFEN — MOTION DESIGNER</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    @font-face {
+      font-family: 'OffBit';
+      src: url('OffBit-Bold.ttf') format('truetype');
+      font-weight: bold;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --fg: #ffffff;
+      --bg: #000000;
+      --accent: #00ffa8;
+      --mono: 'Share Tech Mono', 'Courier New', monospace;
+    }
+
+    html, body {
+      color: var(--fg);
+      font-family: var(--mono);
+      overflow-x: hidden;
+      scroll-snap-type: y mandatory;
+      height: 100%;
+    }
+
+    body {
+      background: #000;
+    }
+
+    body::before,
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* hero — радиальное свечение по центру */
+    body::before {
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, #001f0e 0%, #000c06 40%, #000000 75%);
+      opacity: 1;
+    }
+
+    /* works — зелёный только по бокам, центр очень тёмный */
+    body::after {
+      background:
+        linear-gradient(to right,
+          #001208 0%,
+          #000602 15%,
+          #000000 35%,
+          #000000 65%,
+          #000602 85%,
+          #001208 100%
+        );
+      opacity: 0;
+    }
+
+    body.at-works::before { opacity: 0; }
+    body.at-works::after  { opacity: 1; }
+
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    section {
+      position: relative;
+      z-index: 2;
+    }
+
+
+    /* ─── SECTION BASE ─── */
+    section {
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 40px;
+    }
+
+    /* ─── ENTRANCE ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .hero__photo-enter {
+      animation: fadeIn 0.8s ease forwards;
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+
+    .hero__section-label {
+      animation: fadeIn 0.5s ease forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+
+    .hero__label {
+      animation: fadeUp 0.5s ease forwards;
+      animation-delay: 0.3s;
+      opacity: 0;
+    }
+
+    .hero__name {
+      animation: fadeUp 0.5s ease forwards;
+      animation-delay: 0.7s;
+      opacity: 0;
+    }
+
+    .hero__meta {
+      animation: fadeUp 0.5s ease forwards;
+      animation-delay: 1s;
+      opacity: 0;
+    }
+
+    .hero__desc {
+      animation: fadeUp 0.5s ease forwards;
+      animation-delay: 1.15s;
+      opacity: 0;
+    }
+
+    .hero__tg {
+      animation: fadeUp 0.5s ease forwards;
+      animation-delay: 1.3s;
+      opacity: 0;
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      flex-direction: row;
+      gap: 80px;
+      position: relative;
+    }
+
+    .hero__section-label {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .hero__logo {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      height: 40px;
+      width: auto;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+      animation-delay: 0.1s;
+      filter: brightness(0) invert(1) opacity(0.35);
+    }
+
+    .hero__photo-wrap {
+      position: relative;
+      width: 260px;
+      height: 320px;
+      flex-shrink: 0;
+      padding: 3px;
+      background: conic-gradient(
+        from 0deg,
+        #00ffa8, #ffffff22, #00ffa8, #ffffff11, #00ffa8
+      );
+      animation: spin-border 4s linear infinite;
+      border-radius: 2px;
+    }
+
+    @keyframes spin-border {
+      from { --angle: 0deg; }
+      to   { --angle: 360deg; }
+    }
+
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    .hero__photo-wrap {
+      background: conic-gradient(
+        from var(--angle),
+        transparent 20%,
+        #00ffa8 40%,
+        #ffffff44 50%,
+        #00ffa8 60%,
+        transparent 80%
+      );
+    }
+
+    .hero__photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      filter: grayscale(20%);
+      display: block;
+    }
+
+    .hero__photo-placeholder {
+      width: 260px;
+      height: 320px;
+      background: #111;
+      border: 1px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #444;
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .hero__info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+      max-width: 480px;
+    }
+
+    .hero__label {
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .hero__name {
+      font-family: 'OffBit', sans-serif;
+      font-weight: bold;
+      font-size: clamp(36px, 6vw, 80px);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      line-height: 1;
+    }
+
+    .hero__meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .hero__meta span {
+      font-size: 13px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .hero__meta span b {
+      color: var(--fg);
+      font-weight: normal;
+    }
+
+    .hero__desc {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #aaa;
+      max-width: 360px;
+    }
+
+    .hero__tg {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 12px 28px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      transition: background 0.15s, color 0.15s;
+      width: fit-content;
+    }
+
+    .hero__tg:hover {
+      background: var(--accent);
+      color: var(--bg);
+    }
+
+    /* ─── WORKS ─── */
+    .works {
+      flex-direction: column;
+      gap: 40px;
+      padding: 60px 24px;
+    }
+
+    .works__title {
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: #555;
+      align-self: flex-start;
+    }
+
+    .works__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 1400px;
+      transition: grid-template-columns 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  grid-template-rows    0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .works__card {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      cursor: pointer;
+      background: #111;
+    }
+
+    .works__card video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .works__card {
+      transition: filter 0.6s ease, opacity 0.6s ease;
+    }
+
+    .works__grid.has-hover .works__card {
+      filter: brightness(0.3) blur(2px);
+      opacity: 0.6;
+    }
+
+    .works__grid.has-hover .works__card.is-active {
+      filter: brightness(1) blur(0px);
+      opacity: 1;
+    }
+
+    .works__card__label {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 10px 14px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #fff;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .works__card:hover .works__card__label {
+      opacity: 1;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.95);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox video {
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .lightbox__close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      font-family: var(--mono);
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+    }
+
+    .lightbox__close:hover {
+      color: var(--accent);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 700px) {
+      .hero {
+        flex-direction: column;
+        gap: 40px;
+        align-items: flex-start;
+      }
+
+      .hero__photo,
+      .hero__photo-placeholder {
+        width: 100%;
+        height: 260px;
+      }
+
+      .works__grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="bg-canvas"></canvas>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <p class="hero__section-label">/ about</p>
+    <img class="hero__logo" src="cloofen.png" alt="Cloofen" />
+    <div class="hero__photo-enter">
+      <div class="hero__photo-wrap">
+        <img class="hero__photo" src="kamka.jpg" alt="Cloofen" />
+      </div>
+    </div>
+
+    <div class="hero__info">
+      <span class="hero__label">/ Motion Designer</span>
+      <h1 class="hero__name">Cloofen</h1>
+      <div class="hero__meta">
+        <span>AGE — <b>19</b></span>
+      </div>
+      <p class="hero__desc">
+        Я моушн-дизайнер с опытом в создании стильных и динамичных видео.
+        Помогу сделать ваш контент ярким, запоминающимся и эффективным.
+      </p>
+      <a class="hero__tg" href="https://t.me/cloofenm" target="_blank">
+        / Написать в Telegram
+      </a>
+    </div>
+  </section>
+
+  <!-- ─── WORKS ─── -->
+  <section class="works">
+    <p class="works__title">/ Works</p>
+    <div class="works__grid">
+
+      <div class="works__card" onclick="openLightbox('Solayer.mp4')">
+        <video src="Solayer.mp4" autoplay muted loop playsinline></video>
+        <div class="works__card__label">Solayer</div>
+      </div>
+
+      <div class="works__card" onclick="openLightbox('Mr.Stephen.mp4')">
+        <video src="Mr.Stephen.mp4" autoplay muted loop playsinline></video>
+        <div class="works__card__label">Mr. Stephen</div>
+      </div>
+
+      <div class="works__card" onclick="openLightbox('Sentient.mp4')">
+        <video src="Sentient.mp4" autoplay muted loop playsinline></video>
+        <div class="works__card__label">Sentient</div>
+      </div>
+
+      <div class="works__card" onclick="openLightbox('Seismic.mp4')">
+        <video src="Seismic.mp4" autoplay muted loop playsinline></video>
+        <div class="works__card__label">Seismic</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── LIGHTBOX ─── -->
+  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+    <button class="lightbox__close" onclick="closeLightbox()">✕</button>
+    <video id="lightbox-video" controls></video>
+  </div>
+
+  <script>
+    // ─── BINARY BACKGROUND ───
+    (function () {
+      const canvas = document.getElementById('bg-canvas');
+      const ctx = canvas.getContext('2d');
+      const SPACING = 16;
+      let W, H;
+
+      function build() {
+        W = canvas.width  = window.innerWidth;
+        H = canvas.height = window.innerHeight;
+        ctx.clearRect(0, 0, W, H);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const cols = Math.ceil(W / SPACING) + 1;
+        const rows = Math.ceil(H / SPACING) + 1;
+
+        for (let r = 0; r < rows; r++) {
+          for (let c = 0; c < cols; c++) {
+            const x = c * SPACING;
+            const y = r * SPACING;
+            const char = Math.random() > 0.5 ? '1' : '0';
+            const size = 5 + Math.random() * 6;
+            const alpha = 0.18 + Math.random() * 0.12;
+            ctx.font = `bold ${size}px OffBit, monospace`;
+            ctx.fillStyle = `rgba(0,60,30,${alpha.toFixed(2)})`;
+            ctx.fillText(char, x, y);
+          }
+        }
+      }
+
+      window.addEventListener('resize', build);
+      build();
+    })();
+
+    // ─── SCROLL BACKGROUND ───
+    (function () {
+      const works = document.querySelector('.works');
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          document.body.classList.toggle('at-works', e.isIntersecting);
+        });
+      }, { threshold: 0.15 });
+      observer.observe(works);
+    })();
+
+    // ─── GRID HOVER EXPAND ───
+    const grid = document.querySelector('.works__grid');
+    const cards = [...document.querySelectorAll('.works__card')];
+
+    // карточки по позиции: 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
+    const BIG = '1.55fr';
+    const SML = '0.45fr';
+
+    const colMap = [
+      [BIG, SML], // card 0 — left col big
+      [SML, BIG], // card 1 — right col big
+      [BIG, SML], // card 2 — left col big
+      [SML, BIG], // card 3 — right col big
+    ];
+    const rowMap = [
+      [BIG, SML], // card 0 — top row big
+      [BIG, SML], // card 1 — top row big
+      [SML, BIG], // card 2 — bottom row big
+      [SML, BIG], // card 3 — bottom row big
+    ];
+
+    let resetTimer = null;
+
+    cards.forEach((card, i) => {
+      card.addEventListener('mouseenter', () => {
+        clearTimeout(resetTimer);
+        grid.style.gridTemplateColumns = colMap[i].join(' ');
+        grid.style.gridTemplateRows    = rowMap[i].join(' ');
+        grid.classList.add('has-hover');
+        cards.forEach(c => c.classList.remove('is-active'));
+        card.classList.add('is-active');
+      });
+    });
+
+    grid.addEventListener('mouseleave', () => {
+      resetTimer = setTimeout(() => {
+        grid.style.gridTemplateColumns = '1fr 1fr';
+        grid.style.gridTemplateRows    = '1fr 1fr';
+        grid.classList.remove('has-hover');
+        cards.forEach(c => c.classList.remove('is-active'));
+      }, 120);
+    });
+
+    // ─── LIGHTBOX ───
+    function openLightbox(src) {
+      const lb = document.getElementById('lightbox');
+      const vid = document.getElementById('lightbox-video');
+      vid.src = src;
+      vid.play();
+      lb.classList.add('active');
+    }
+
+    function closeLightbox(e) {
+      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox__close')) return;
+      const lb = document.getElementById('lightbox');
+      const vid = document.getElementById('lightbox-video');
+      lb.classList.remove('active');
+      vid.pause();
+      vid.src = '';
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeLightbox();
+    });
+  </script>
+
+</body>
+</html>
