@@ -562,6 +562,9 @@
 
     function openLightbox(card) {
       lastFocus = card;
+      // постер обязателен: полноразмерное видео весит несколько МБ, и без него
+      // на телефоне вместо кадра висит чёрный прямоугольник с полосой управления
+      lbVideo.poster = 'media/' + card.dataset.slug + '.jpg';
       lbVideo.src = 'media/' + card.dataset.slug + '.mp4';
       lb.classList.add('active');
       videos.forEach(function (v) { v.pause(); });
@@ -574,6 +577,7 @@
       lb.classList.remove('active');
       lbVideo.pause();
       lbVideo.removeAttribute('src');
+      lbVideo.removeAttribute('poster');
       lbVideo.load();
       if (canExpand.matches) videos.forEach(play);
       if (lastFocus) lastFocus.focus();
