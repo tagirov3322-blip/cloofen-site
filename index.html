@@ -27,9 +27,14 @@
   <link rel="preload" as="image" href="media/mr-stephen.jpg" />
 
   <style>
+    /* Подмножество ASCII в woff2: 3 КБ вместо 343 КБ исходного ttf.
+       Пересобрать после смены имени или символов бинарного фона:
+       python -m fontTools.subset OffBit-Bold.ttf --unicodes="U+0020-007E" \
+         --flavor=woff2 --layout-features="" --no-hinting --desubroutinize \
+         --output-file=offbit-bold.woff2 */
     @font-face {
       font-family: 'OffBit';
-      src: url('OffBit-Bold.ttf') format('truetype');
+      src: url('offbit-bold.woff2') format('woff2');
       font-weight: bold;
       font-display: swap;
     }
