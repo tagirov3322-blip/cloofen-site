@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>KAMIL — CGI ARTIST</title>
-  <meta name="description" content="Kamil — CGI artist. Unreal Engine, Blender, After Effects. Selected work." />
+  <title>CLOOFEN — CGI ARTIST</title>
+  <meta name="description" content="CGI artist. Unreal Engine, Blender, After Effects. Selected work." />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cloofen-site.vercel.app/" />
-  <meta property="og:title" content="KAMIL — CGI ARTIST" />
+  <meta property="og:title" content="CLOOFEN — CGI ARTIST" />
   <meta property="og:description" content="Unreal Engine, Blender, After Effects. Selected work." />
   <meta property="og:image" content="https://cloofen-site.vercel.app/og.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#000000" />
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%2300ffa8' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%2300ffa8' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -122,31 +122,22 @@
       gap: 24px 40px;
     }
 
-    /* Роль живёт в углу страницы, а не в потоке шапки */
+    /* Роль живёт в углу страницы, а не в потоке шапки, и служит h1 */
     .corner {
       position: absolute;
       top: var(--pad);
       left: var(--pad);
       color: var(--accent);
       font-size: 11px;
+      font-weight: normal;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-    }
-
-    .head__name {
-      font-family: 'OffBit', var(--mono);
-      font-weight: bold;
-      font-size: clamp(26px, 2.8vw, 38px);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      line-height: 1;
     }
 
     .head__meta {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      margin-top: 14px;
+      gap: 6px;
     }
 
     .head__meta span {
@@ -372,15 +363,12 @@
 
   <main class="page">
 
-    <span class="corner">/ CGI Artist</span>
+    <h1 class="corner">/ CGI Artist</h1>
 
     <header class="head">
-      <div>
-        <h1 class="head__name">Kamil</h1>
-        <div class="head__meta">
-          <span>AGE — <b>20</b></span>
-          <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
-        </div>
+      <div class="head__meta">
+        <span>AGE — <b>20</b></span>
+        <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
       </div>
 
       <a class="head__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">/ Write on Telegram</a>
