@@ -114,12 +114,10 @@
     .works__grid { animation-delay: 0.40s; }
 
     /* ─── HEAD ─── */
-    /* stretch + space-between: строки слева садятся ровно по верхней и нижней
-       границе кнопки справа, какой бы высоты она ни была */
     .head {
       display: flex;
       flex-wrap: wrap;
-      align-items: stretch;
+      align-items: center;
       justify-content: space-between;
       gap: 24px 40px;
     }
@@ -139,8 +137,7 @@
     .head__meta {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      gap: 6px;
+      gap: 9px;
     }
 
     .head__meta span {
@@ -150,6 +147,8 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
+
+    .head__meta .age { font-size: 18px; }
 
     .head__meta span b {
       color: var(--fg);
@@ -374,7 +373,7 @@
 
     <header class="head">
       <div class="head__meta">
-        <span>AGE — <b>20</b></span>
+        <span class="age">AGE — <b>20</b></span>
         <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
       </div>
 
