@@ -122,17 +122,11 @@
       gap: 24px 40px;
     }
 
-    .head__logo {
-      display: block;
-      width: 30px;
-      height: auto;
-      margin-bottom: 12px;
-      filter: brightness(0) invert(1);
-      opacity: 0.3;
-    }
-
-    .head__label {
-      display: block;
+    /* Роль живёт в углу страницы, а не в потоке шапки */
+    .corner {
+      position: absolute;
+      top: var(--pad);
+      left: var(--pad);
       color: var(--accent);
       font-size: 11px;
       letter-spacing: 0.2em;
@@ -140,7 +134,6 @@
     }
 
     .head__name {
-      margin-top: 8px;
       font-family: 'OffBit', var(--mono);
       font-weight: bold;
       font-size: clamp(26px, 2.8vw, 38px);
@@ -152,9 +145,8 @@
     .head__meta {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
       gap: 5px;
-      text-align: right;
+      margin-top: 14px;
     }
 
     .head__meta span {
@@ -169,13 +161,12 @@
       font-weight: normal;
     }
 
-    /* Кнопка — главный акцент шапки: единственный залитый элемент на странице */
+    /* Акцент держим размером, а не заливкой */
     .head__tg {
-      margin-top: 18px;
+      flex-shrink: 0;
       padding: 17px 38px;
       border: 1px solid var(--accent);
-      background: var(--accent);
-      color: var(--bg);
+      color: var(--accent);
       text-decoration: none;
       font-size: 16px;
       text-transform: uppercase;
@@ -185,8 +176,8 @@
 
     .head__tg:hover,
     .head__tg:focus-visible {
-      background: transparent;
-      color: var(--accent);
+      background: var(--accent);
+      color: var(--bg);
       outline: none;
     }
 
@@ -337,15 +328,16 @@
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 860px) {
-      .page { justify-content: flex-start; padding-top: 40px; gap: 24px; }
+      /* запас сверху, чтобы шапка не наехала на угловую метку */
+      .page { justify-content: flex-start; padding-top: 58px; gap: 24px; }
 
       .head {
         flex-direction: column;
         align-items: flex-start;
         gap: 20px;
       }
-      .head__meta { align-items: flex-start; text-align: left; }
-      .head__meta span { font-size: 11.5px; }
+      .head__meta span { font-size: 13px; }
+      .head__tg { padding: 15px 30px; font-size: 14px; }
 
       .hint { display: none; }
 
@@ -380,18 +372,18 @@
 
   <main class="page">
 
+    <span class="corner">/ CGI Artist</span>
+
     <header class="head">
       <div>
-        <img class="head__logo" src="logo.png" alt="" />
-        <span class="head__label">/ CGI Artist</span>
         <h1 class="head__name">Kamil</h1>
+        <div class="head__meta">
+          <span>AGE — <b>20</b></span>
+          <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
+        </div>
       </div>
 
-      <div class="head__meta">
-        <span>AGE — <b>20</b></span>
-        <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
-        <a class="head__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">/ Write on Telegram</a>
-      </div>
+      <a class="head__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">/ Write on Telegram</a>
     </header>
 
     <p class="hint">/ hover to expand — click to play</p>
