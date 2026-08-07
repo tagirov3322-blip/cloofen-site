@@ -114,10 +114,13 @@
     .works__grid { animation-delay: 0.40s; }
 
     /* ─── HEAD ─── */
+    /* Высоты подогнаны навстречу: текст ~43px, кнопка ~44px. stretch добирает
+       остаток в межстрочный зазор, поэтому грани совпадают, а строки при этом
+       не разъезжаются — распределять почти нечего. */
     .head {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
+      align-items: stretch;
       justify-content: space-between;
       gap: 24px 40px;
     }
@@ -137,6 +140,7 @@
     .head__meta {
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       gap: 9px;
     }
 
@@ -148,7 +152,7 @@
       letter-spacing: 0.1em;
     }
 
-    .head__meta .age { font-size: 18px; }
+    .head__meta .age { font-size: 20px; }
 
     .head__meta span b {
       color: var(--fg);
@@ -161,7 +165,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 17px 38px;
+      padding: 12px 38px;
       border: 1px solid var(--accent);
       color: var(--accent);
       text-decoration: none;
