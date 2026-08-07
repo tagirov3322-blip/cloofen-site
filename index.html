@@ -143,7 +143,7 @@
       margin-top: 8px;
       font-family: 'OffBit', var(--mono);
       font-weight: bold;
-      font-size: clamp(38px, 6vw, 76px);
+      font-size: clamp(26px, 2.8vw, 38px);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       line-height: 1;
@@ -158,7 +158,7 @@
     }
 
     .head__meta span {
-      font-size: 12px;
+      font-size: 14px;
       color: #888;
       text-transform: uppercase;
       letter-spacing: 0.1em;
@@ -169,22 +169,24 @@
       font-weight: normal;
     }
 
+    /* Кнопка — главный акцент шапки: единственный залитый элемент на странице */
     .head__tg {
-      margin-top: 12px;
-      padding: 11px 24px;
+      margin-top: 18px;
+      padding: 17px 38px;
       border: 1px solid var(--accent);
-      color: var(--accent);
+      background: var(--accent);
+      color: var(--bg);
       text-decoration: none;
-      font-size: 12px;
+      font-size: 16px;
       text-transform: uppercase;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.16em;
       transition: background 0.15s, color 0.15s;
     }
 
     .head__tg:hover,
     .head__tg:focus-visible {
-      background: var(--accent);
-      color: var(--bg);
+      background: transparent;
+      color: var(--accent);
       outline: none;
     }
 
