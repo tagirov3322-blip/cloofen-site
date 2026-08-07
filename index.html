@@ -1,16 +1,32 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CLOOFEN — MOTION DESIGNER</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
+  <title>CLOOFEN — MOTION DESIGNER</title>
+  <meta name="description" content="Cloofen — motion designer & 3D artist. Product films, CG environments and interface motion for Web3, fintech and tech brands." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://cloofen-site.vercel.app/" />
+  <meta property="og:title" content="CLOOFEN — Motion Designer" />
+  <meta property="og:description" content="Product films, CG environments and interface motion. Selected work." />
+  <meta property="og:image" content="https://cloofen-site.vercel.app/og.jpg" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="theme-color" content="#000000" />
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%2300ffa8' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <style>
     @font-face {
       font-family: 'OffBit';
       src: url('OffBit-Bold.ttf') format('truetype');
       font-weight: bold;
+      font-display: swap;
     }
 
     *, *::before, *::after {
@@ -23,19 +39,30 @@
       --fg: #ffffff;
       --bg: #000000;
       --accent: #00ffa8;
-      --mono: 'Share Tech Mono', 'Courier New', monospace;
+      --dim: #555;
+      --mono: 'Share Tech Mono', ui-monospace, 'Courier New', monospace;
+      --gap: 12px;
     }
 
-    html, body {
-      color: var(--fg);
-      font-family: var(--mono);
-      overflow-x: hidden;
-      scroll-snap-type: y mandatory;
+    /* overflow-x задаём ТОЛЬКО на html — он пробрасывается на вьюпорт.
+       Если продублировать его на body вместе с height:100%, body становится
+       собственным скролл-контейнером: документ перестаёт скроллиться,
+       window.scrollY всегда 0, а scroll-snap и якоря работают через раз. */
+    html {
       height: 100%;
+      overflow-x: hidden;
     }
 
     body {
+      min-height: 100%;
       background: #000;
+      color: var(--fg);
+      font-family: var(--mono);
+    }
+
+    /* scroll-snap только на десктопе — на мобильных он залипает */
+    @media (hover: hover) and (min-width: 900px) {
+      html { scroll-snap-type: y proximity; }
     }
 
     body::before,
@@ -56,15 +83,9 @@
 
     /* works — зелёный только по бокам, центр очень тёмный */
     body::after {
-      background:
-        linear-gradient(to right,
-          #001208 0%,
-          #000602 15%,
-          #000000 35%,
-          #000000 65%,
-          #000602 85%,
-          #001208 100%
-        );
+      background: linear-gradient(to right,
+        #001208 0%, #000602 15%, #000000 35%,
+        #000000 65%, #000602 85%, #001208 100%);
       opacity: 0;
     }
 
@@ -78,15 +99,12 @@
       pointer-events: none;
     }
 
+    /* ─── SECTION BASE ─── */
     section {
       position: relative;
       z-index: 2;
-    }
-
-
-    /* ─── SECTION BASE ─── */
-    section {
       min-height: 100vh;
+      min-height: 100svh; /* на мобильных адресная строка съедает 100vh */
       scroll-snap-align: start;
       display: flex;
       align-items: center;
@@ -94,80 +112,39 @@
       padding: 60px 40px;
     }
 
-    /* ─── ENTRANCE ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .hero__photo-enter {
-      animation: fadeIn 0.8s ease forwards;
-      animation-delay: 0.2s;
-      opacity: 0;
-    }
-
-    .hero__section-label {
-      animation: fadeIn 0.5s ease forwards;
-      animation-delay: 0.3s;
-      opacity: 0;
-    }
-
-    .hero__label {
-      animation: fadeUp 0.5s ease forwards;
-      animation-delay: 0.3s;
-      opacity: 0;
-    }
-
-    .hero__name {
-      animation: fadeUp 0.5s ease forwards;
-      animation-delay: 0.7s;
-      opacity: 0;
-    }
-
-    .hero__meta {
-      animation: fadeUp 0.5s ease forwards;
-      animation-delay: 1s;
-      opacity: 0;
-    }
-
-    .hero__desc {
-      animation: fadeUp 0.5s ease forwards;
-      animation-delay: 1.15s;
-      opacity: 0;
-    }
-
-    .hero__tg {
-      animation: fadeUp 0.5s ease forwards;
-      animation-delay: 1.3s;
-      opacity: 0;
-    }
-
-    /* ─── HERO ─── */
-    .hero {
-      flex-direction: row;
-      gap: 80px;
-      position: relative;
-    }
-
-    .hero__section-label {
+    .section-label {
       position: absolute;
       top: 24px;
       left: 24px;
       font-size: 11px;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: #555;
+      color: var(--dim);
+    }
+
+    /* ─── ENTRANCE ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .hero__photo-enter  { animation: fadeIn 0.8s ease forwards; animation-delay: 0.20s; opacity: 0; }
+    .hero .section-label{ animation: fadeIn 0.5s ease forwards; animation-delay: 0.30s; opacity: 0; }
+    .hero__label        { animation: fadeUp 0.5s ease forwards; animation-delay: 0.30s; opacity: 0; }
+    .hero__name         { animation: fadeUp 0.5s ease forwards; animation-delay: 0.70s; opacity: 0; }
+    .hero__meta         { animation: fadeUp 0.5s ease forwards; animation-delay: 1.00s; opacity: 0; }
+    .hero__desc         { animation: fadeUp 0.5s ease forwards; animation-delay: 1.15s; opacity: 0; }
+    .hero__tg           { animation: fadeUp 0.5s ease forwards; animation-delay: 1.30s; opacity: 0; }
+    .hero__scroll       { animation: fadeIn 0.6s ease forwards; animation-delay: 1.60s; opacity: 0; }
+
+    /* ─── HERO ─── */
+    .hero {
+      flex-direction: row;
+      gap: 80px;
     }
 
     .hero__logo {
@@ -183,18 +160,10 @@
       filter: brightness(0) invert(1) opacity(0.35);
     }
 
-    .hero__photo-wrap {
-      position: relative;
-      width: 260px;
-      height: 320px;
-      flex-shrink: 0;
-      padding: 3px;
-      background: conic-gradient(
-        from 0deg,
-        #00ffa8, #ffffff22, #00ffa8, #ffffff11, #00ffa8
-      );
-      animation: spin-border 4s linear infinite;
-      border-radius: 2px;
+    @property --angle {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
     }
 
     @keyframes spin-border {
@@ -202,13 +171,13 @@
       to   { --angle: 360deg; }
     }
 
-    @property --angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-
     .hero__photo-wrap {
+      position: relative;
+      width: 260px;
+      height: 320px;
+      flex-shrink: 0;
+      padding: 3px;
+      border-radius: 2px;
       background: conic-gradient(
         from var(--angle),
         transparent 20%,
@@ -217,6 +186,7 @@
         #00ffa8 60%,
         transparent 80%
       );
+      animation: spin-border 4s linear infinite;
     }
 
     .hero__photo {
@@ -226,19 +196,6 @@
       object-position: top;
       filter: grayscale(20%);
       display: block;
-    }
-
-    .hero__photo-placeholder {
-      width: 260px;
-      height: 320px;
-      background: #111;
-      border: 1px solid #333;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #444;
-      font-size: 12px;
-      flex-shrink: 0;
     }
 
     .hero__info {
@@ -257,7 +214,7 @@
     }
 
     .hero__name {
-      font-family: 'OffBit', sans-serif;
+      font-family: 'OffBit', var(--mono);
       font-weight: bold;
       font-size: clamp(36px, 6vw, 80px);
       text-transform: uppercase;
@@ -287,7 +244,7 @@
       font-size: 16px;
       line-height: 1.7;
       color: #aaa;
-      max-width: 360px;
+      max-width: 380px;
     }
 
     .hero__tg {
@@ -305,43 +262,73 @@
       width: fit-content;
     }
 
-    .hero__tg:hover {
+    .hero__tg:hover,
+    .hero__tg:focus-visible {
       background: var(--accent);
       color: var(--bg);
+      outline: none;
     }
+
+    .hero__scroll {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-decoration: none;
+    }
+    .hero__scroll:hover { color: var(--accent); }
 
     /* ─── WORKS ─── */
     .works {
       flex-direction: column;
-      gap: 40px;
-      padding: 60px 24px;
+      gap: 28px;
+      padding: 72px 24px 60px;
     }
 
-    .works__title {
+    .works__head {
+      width: min(1400px, calc(100vw - 48px));
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 20px;
       font-size: 11px;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: #555;
-      align-self: flex-start;
+      color: var(--dim);
     }
 
     .works__grid {
+      --gw: min(1400px, calc(100vw - 48px));
+      --cell: calc((var(--gw) - 2 * var(--gap)) / 3);
+      width: var(--gw);
+      height: calc(var(--cell) * 0.5625 * 2 + var(--gap));
+      max-height: calc(100vh - 250px);
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-      max-width: 1400px;
+      gap: var(--gap);
       transition: grid-template-columns 0.8s cubic-bezier(0.16, 1, 0.3, 1),
                   grid-template-rows    0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .works__card {
       position: relative;
-      aspect-ratio: 16 / 9;
+      display: block;
+      min-width: 0;
+      min-height: 0;
       overflow: hidden;
       cursor: pointer;
-      background: #111;
+      background: #0a0a0a;
+      border: 1px solid #ffffff10;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      transition: filter 0.6s ease, opacity 0.6s ease, border-color 0.4s ease;
     }
 
     .works__card video {
@@ -349,10 +336,6 @@
       height: 100%;
       object-fit: cover;
       display: block;
-    }
-
-    .works__card {
-      transition: filter 0.6s ease, opacity 0.6s ease;
     }
 
     .works__grid.has-hover .works__card {
@@ -363,6 +346,22 @@
     .works__grid.has-hover .works__card.is-active {
       filter: brightness(1) blur(0px);
       opacity: 1;
+      border-color: #00ffa855;
+    }
+
+    .works__card:focus-visible {
+      outline: 1px solid var(--accent);
+      outline-offset: -1px;
+    }
+
+    .works__card__idx {
+      position: absolute;
+      top: 8px;
+      left: 10px;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      color: #ffffff66;
+      text-shadow: 0 1px 4px #000;
     }
 
     .works__card__label {
@@ -370,19 +369,54 @@
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 10px 14px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: #fff;
+      padding: 12px 14px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
       opacity: 0;
       transition: opacity 0.2s;
     }
 
-    .works__card:hover .works__card__label {
-      opacity: 1;
+    .works__card:hover .works__card__label,
+    .works__card:focus-visible .works__card__label,
+    .works__card.is-active .works__card__label { opacity: 1; }
+
+    .works__card__label b {
+      display: block;
+      font-size: 12px;
+      font-weight: normal;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
+
+    .works__card__label i {
+      display: block;
+      margin-top: 3px;
+      font-style: normal;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .works__foot {
+      width: min(1400px, calc(100vw - 48px));
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 24px;
+      justify-content: space-between;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+
+    .works__foot a { color: var(--accent); text-decoration: none; }
+    .works__foot a:hover { text-decoration: underline; }
 
     /* ─── LIGHTBOX ─── */
     .lightbox {
@@ -393,21 +427,31 @@
       z-index: 100;
       align-items: center;
       justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+      padding: 40px 20px;
     }
 
-    .lightbox.active {
-      display: flex;
-    }
+    .lightbox.active { display: flex; }
 
     .lightbox video {
-      max-width: 90vw;
-      max-height: 90vh;
+      max-width: 92vw;
+      max-height: 82vh;
+      background: #000;
     }
+
+    .lightbox__caption {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    .lightbox__caption b { color: #fff; font-weight: normal; }
 
     .lightbox__close {
       position: absolute;
-      top: 24px;
-      right: 32px;
+      top: 20px;
+      right: 26px;
       font-family: var(--mono);
       font-size: 24px;
       color: #fff;
@@ -416,29 +460,59 @@
       border: none;
       line-height: 1;
     }
-
-    .lightbox__close:hover {
-      color: var(--accent);
-    }
+    .lightbox__close:hover { color: var(--accent); }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 700px) {
+    @media (max-width: 1100px) {
+      .hero { gap: 48px; }
+    }
+
+    @media (max-width: 860px) {
+      section { padding: 60px 20px; }
+
       .hero {
         flex-direction: column;
-        gap: 40px;
+        gap: 36px;
         align-items: flex-start;
+        justify-content: center;
+        padding-top: 84px;
       }
 
-      .hero__photo,
-      .hero__photo-placeholder {
-        width: 100%;
-        height: 260px;
-      }
+      .hero__photo-wrap { width: 200px; height: 250px; }
+      .hero__info { max-width: none; gap: 18px; }
+      .hero__desc { font-size: 15px; }
 
+      .works { padding: 68px 16px 48px; }
+      .works__head, .works__foot { width: 100%; }
+
+      /* на тач-устройствах раскрытие сетки не работает — обычная сетка 2×3 */
       .works__grid {
+        --gw: 100%;
+        width: 100%;
+        height: auto;
+        max-height: none;
         grid-template-columns: 1fr 1fr;
+        grid-template-rows: none;
         gap: 8px;
       }
+      .works__card { aspect-ratio: 16 / 9; }
+      .works__card__label { opacity: 1; }
+      .works__grid.has-hover .works__card { filter: none; opacity: 1; }
+    }
+
+    @media (max-width: 460px) {
+      .works__grid { grid-template-columns: 1fr; }
+      .works__card__label b { font-size: 11px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+      .hero__photo-enter, .hero__label, .hero__name, .hero__meta,
+      .hero__desc, .hero__tg, .hero__scroll, .hero .section-label { opacity: 1; }
     }
   </style>
 </head>
@@ -447,12 +521,13 @@
   <canvas id="bg-canvas"></canvas>
 
   <!-- ─── HERO ─── -->
-  <section class="hero">
-    <p class="hero__section-label">/ about</p>
+  <section class="hero" id="about">
+    <p class="section-label">/ about</p>
     <img class="hero__logo" src="cloofen.png" alt="Cloofen" />
+
     <div class="hero__photo-enter">
       <div class="hero__photo-wrap">
-        <img class="hero__photo" src="kamka.jpg" alt="Cloofen" />
+        <img class="hero__photo" src="kamka.jpg" alt="Portrait of Cloofen" />
       </div>
     </div>
 
@@ -461,162 +536,249 @@
       <h1 class="hero__name">Cloofen</h1>
       <div class="hero__meta">
         <span>AGE — <b>19</b></span>
+        <span>FOCUS — <b>3D / CGI, MOTION</b></span>
+        <span>BASED — <b>REMOTE, WORLDWIDE</b></span>
       </div>
       <p class="hero__desc">
-        Я моушн-дизайнер с опытом в создании стильных и динамичных видео.
-        Помогу сделать ваш контент ярким, запоминающимся и эффективным.
+        I'm a motion designer with a background in sharp, dynamic video.
+        I help brands make their content bold, memorable and effective.
       </p>
-      <a class="hero__tg" href="https://t.me/cloofenm" target="_blank">
-        / Написать в Telegram
+      <a class="hero__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">
+        / Write on Telegram
       </a>
     </div>
+
+    <a class="hero__scroll" href="#works">↓ works</a>
   </section>
 
   <!-- ─── WORKS ─── -->
-  <section class="works">
-    <p class="works__title">/ Works</p>
-    <div class="works__grid">
+  <section class="works" id="works">
+    <div class="works__head">
+      <span>/ works</span>
+      <span>06 selected — hover to expand, click to play</span>
+    </div>
 
-      <div class="works__card" onclick="openLightbox('Solayer.mp4')">
-        <video src="Solayer.mp4" autoplay muted loop playsinline></video>
-        <div class="works__card__label">Solayer</div>
-      </div>
+    <div class="works__grid" id="works-grid">
 
-      <div class="works__card" onclick="openLightbox('Mr.Stephen.mp4')">
-        <video src="Mr.Stephen.mp4" autoplay muted loop playsinline></video>
-        <div class="works__card__label">Mr. Stephen</div>
-      </div>
+      <button class="works__card" type="button" data-slug="byreal" data-title="Byreal" data-meta="Product film — Bybit">
+        <video src="media/byreal-preview.mp4" poster="media/byreal.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">01</span>
+        <span class="works__card__label"><b>Byreal</b><i>Product film — Bybit</i></span>
+      </button>
 
-      <div class="works__card" onclick="openLightbox('Sentient.mp4')">
-        <video src="Sentient.mp4" autoplay muted loop playsinline></video>
-        <div class="works__card__label">Sentient</div>
-      </div>
+      <button class="works__card" type="button" data-slug="solayer" data-title="Solayer" data-meta="Product 3D — card launch">
+        <video src="media/solayer-preview.mp4" poster="media/solayer.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">02</span>
+        <span class="works__card__label"><b>Solayer</b><i>Product 3D — card launch</i></span>
+      </button>
 
-      <div class="works__card" onclick="openLightbox('Seismic.mp4')">
-        <video src="Seismic.mp4" autoplay muted loop playsinline></video>
-        <div class="works__card__label">Seismic</div>
-      </div>
+      <button class="works__card" type="button" data-slug="mr-stephen" data-title="Mr. Stephen" data-meta="CG environment — short film">
+        <video src="media/mr-stephen-preview.mp4" poster="media/mr-stephen.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">03</span>
+        <span class="works__card__label"><b>Mr. Stephen</b><i>CG environment — short film</i></span>
+      </button>
 
+      <button class="works__card" type="button" data-slug="sentient" data-title="Sentient" data-meta="CG world — concept & animation">
+        <video src="media/sentient-preview.mp4" poster="media/sentient.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">04</span>
+        <span class="works__card__label"><b>Sentient</b><i>CG world — concept &amp; animation</i></span>
+      </button>
+
+      <button class="works__card" type="button" data-slug="seismic" data-title="Seismic" data-meta="Brand identity in 3D">
+        <video src="media/seismic-preview.mp4" poster="media/seismic.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">05</span>
+        <span class="works__card__label"><b>Seismic</b><i>Brand identity in 3D</i></span>
+      </button>
+
+      <button class="works__card" type="button" data-slug="checkout" data-title="Checkout" data-meta="UI motion — interface animation">
+        <video src="media/checkout-preview.mp4" poster="media/checkout.jpg" muted loop playsinline preload="metadata"></video>
+        <span class="works__card__idx">06</span>
+        <span class="works__card__label"><b>Checkout</b><i>UI motion — interface animation</i></span>
+      </button>
+
+    </div>
+
+    <div class="works__foot">
+      <span>Available for freelance</span>
+      <span>Telegram — <a href="https://t.me/cloofenm" target="_blank" rel="noopener">@cloofenm</a></span>
     </div>
   </section>
 
   <!-- ─── LIGHTBOX ─── -->
-  <div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-    <button class="lightbox__close" onclick="closeLightbox()">✕</button>
-    <video id="lightbox-video" controls></video>
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox__close" id="lightbox-close" type="button" aria-label="Close">✕</button>
+    <video id="lightbox-video" controls playsinline></video>
+    <p class="lightbox__caption" id="lightbox-caption"></p>
   </div>
 
   <script>
+  (function () {
+    'use strict';
+
     // ─── BINARY BACKGROUND ───
     (function () {
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      const SPACING = 16;
-      let W, H;
+      var canvas = document.getElementById('bg-canvas');
+      var ctx = canvas.getContext('2d');
+      var SPACING = 16;
+      var raf = null;
 
       function build() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
+        var W = canvas.width  = window.innerWidth;
+        var H = canvas.height = window.innerHeight;
         ctx.clearRect(0, 0, W, H);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
-        const cols = Math.ceil(W / SPACING) + 1;
-        const rows = Math.ceil(H / SPACING) + 1;
+        var cols = Math.ceil(W / SPACING) + 1;
+        var rows = Math.ceil(H / SPACING) + 1;
 
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const x = c * SPACING;
-            const y = r * SPACING;
-            const char = Math.random() > 0.5 ? '1' : '0';
-            const size = 5 + Math.random() * 6;
-            const alpha = 0.18 + Math.random() * 0.12;
-            ctx.font = `bold ${size}px OffBit, monospace`;
-            ctx.fillStyle = `rgba(0,60,30,${alpha.toFixed(2)})`;
-            ctx.fillText(char, x, y);
+        for (var r = 0; r < rows; r++) {
+          for (var c = 0; c < cols; c++) {
+            var size  = 5 + Math.random() * 6;
+            var alpha = 0.18 + Math.random() * 0.12;
+            ctx.font = 'bold ' + size + 'px OffBit, monospace';
+            ctx.fillStyle = 'rgba(0,60,30,' + alpha.toFixed(2) + ')';
+            ctx.fillText(Math.random() > 0.5 ? '1' : '0', c * SPACING, r * SPACING);
           }
         }
       }
 
-      window.addEventListener('resize', build);
+      // на resize перерисовываем не чаще кадра — иначе на мобильных
+      // адресная строка дёргает viewport и грузит CPU
+      window.addEventListener('resize', function () {
+        if (raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(build);
+      });
       build();
     })();
 
     // ─── SCROLL BACKGROUND ───
     (function () {
-      const works = document.querySelector('.works');
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
+      var works = document.querySelector('.works');
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
           document.body.classList.toggle('at-works', e.isIntersecting);
         });
-      }, { threshold: 0.15 });
-      observer.observe(works);
+      }, { threshold: 0.15 }).observe(works);
     })();
 
-    // ─── GRID HOVER EXPAND ───
-    const grid = document.querySelector('.works__grid');
-    const cards = [...document.querySelectorAll('.works__card')];
+    // ─── WORKS ───
+    var grid  = document.getElementById('works-grid');
+    var cards = Array.prototype.slice.call(grid.querySelectorAll('.works__card'));
+    var COLS  = 3, ROWS = 2;
+    var BIG_C = '1.7fr',  SML_C = '0.65fr';
+    var BIG_R = '1.45fr', SML_R = '0.55fr';
 
-    // карточки по позиции: 0=top-left, 1=top-right, 2=bottom-left, 3=bottom-right
-    const BIG = '1.55fr';
-    const SML = '0.45fr';
+    var canExpand = window.matchMedia('(hover: hover) and (min-width: 861px)');
+    var resetTimer = null;
 
-    const colMap = [
-      [BIG, SML], // card 0 — left col big
-      [SML, BIG], // card 1 — right col big
-      [BIG, SML], // card 2 — left col big
-      [SML, BIG], // card 3 — right col big
-    ];
-    const rowMap = [
-      [BIG, SML], // card 0 — top row big
-      [BIG, SML], // card 1 — top row big
-      [SML, BIG], // card 2 — bottom row big
-      [SML, BIG], // card 3 — bottom row big
-    ];
+    function track(count, active, big, small) {
+      var out = [];
+      for (var i = 0; i < count; i++) out.push(i === active ? big : small);
+      return out.join(' ');
+    }
 
-    let resetTimer = null;
+    function expand(i) {
+      if (!canExpand.matches) return;
+      clearTimeout(resetTimer);
+      grid.style.gridTemplateColumns = track(COLS, i % COLS, BIG_C, SML_C);
+      grid.style.gridTemplateRows    = track(ROWS, Math.floor(i / COLS), BIG_R, SML_R);
+      grid.classList.add('has-hover');
+      cards.forEach(function (c) { c.classList.remove('is-active'); });
+      cards[i].classList.add('is-active');
+    }
 
-    cards.forEach((card, i) => {
-      card.addEventListener('mouseenter', () => {
-        clearTimeout(resetTimer);
-        grid.style.gridTemplateColumns = colMap[i].join(' ');
-        grid.style.gridTemplateRows    = rowMap[i].join(' ');
-        grid.classList.add('has-hover');
-        cards.forEach(c => c.classList.remove('is-active'));
-        card.classList.add('is-active');
+    function collapse() {
+      resetTimer = setTimeout(function () {
+        grid.style.gridTemplateColumns = '';
+        grid.style.gridTemplateRows    = '';
+        grid.classList.remove('has-hover');
+        cards.forEach(function (c) { c.classList.remove('is-active'); });
+      }, 120);
+    }
+
+    cards.forEach(function (card, i) {
+      card.addEventListener('mouseenter', function () { expand(i); });
+      card.addEventListener('focus',      function () { expand(i); });
+      card.addEventListener('click',      function () { openLightbox(card); });
+
+      // стрелками ходим по сетке — навигация с клавиатуры
+      card.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight') next = i + 1;
+        else if (e.key === 'ArrowLeft')  next = i - 1;
+        else if (e.key === 'ArrowDown')  next = i + COLS;
+        else if (e.key === 'ArrowUp')    next = i - COLS;
+        if (next !== null && cards[next]) { e.preventDefault(); cards[next].focus(); }
       });
     });
 
-    grid.addEventListener('mouseleave', () => {
-      resetTimer = setTimeout(() => {
-        grid.style.gridTemplateColumns = '1fr 1fr';
-        grid.style.gridTemplateRows    = '1fr 1fr';
-        grid.classList.remove('has-hover');
-        cards.forEach(c => c.classList.remove('is-active'));
-      }, 120);
+    grid.addEventListener('mouseleave', collapse);
+    grid.addEventListener('focusout', function (e) {
+      if (!grid.contains(e.relatedTarget)) collapse();
     });
+    canExpand.addEventListener('change', function () {
+      grid.style.gridTemplateColumns = '';
+      grid.style.gridTemplateRows    = '';
+      grid.classList.remove('has-hover');
+    });
+
+    // ─── PREVIEW PLAYBACK ───
+    // Десктоп: все превью крутятся. Мобильный: играет только то, что на экране —
+    // иначе шесть одновременных декодов сажают батарею и тормозят скролл.
+    function play(v) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+
+    var videos = cards.map(function (c) { return c.querySelector('video'); });
+
+    if (canExpand.matches) {
+      videos.forEach(function (v) { v.preload = 'auto'; play(v); });
+    } else if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var v = e.target.querySelector('video');
+          if (e.isIntersecting) { v.preload = 'auto'; play(v); } else { v.pause(); }
+        });
+      }, { threshold: 0.5 });
+      cards.forEach(function (c) { io.observe(c); });
+    }
 
     // ─── LIGHTBOX ───
-    function openLightbox(src) {
-      const lb = document.getElementById('lightbox');
-      const vid = document.getElementById('lightbox-video');
-      vid.src = src;
-      vid.play();
+    var lb        = document.getElementById('lightbox');
+    var lbVideo   = document.getElementById('lightbox-video');
+    var lbCaption = document.getElementById('lightbox-caption');
+    var lastFocus = null;
+
+    function openLightbox(card) {
+      lastFocus = card;
+      lbVideo.src = 'media/' + card.dataset.slug + '.mp4';
+      lbCaption.innerHTML = '<b>' + card.dataset.title + '</b> — ' + card.dataset.meta;
       lb.classList.add('active');
+      videos.forEach(function (v) { v.pause(); });
+      play(lbVideo);
+      document.getElementById('lightbox-close').focus();
     }
 
-    function closeLightbox(e) {
-      if (e && e.target !== document.getElementById('lightbox') && !e.target.classList.contains('lightbox__close')) return;
-      const lb = document.getElementById('lightbox');
-      const vid = document.getElementById('lightbox-video');
+    function closeLightbox() {
+      if (!lb.classList.contains('active')) return;
       lb.classList.remove('active');
-      vid.pause();
-      vid.src = '';
+      lbVideo.pause();
+      lbVideo.removeAttribute('src');
+      lbVideo.load();
+      if (canExpand.matches) videos.forEach(play);
+      if (lastFocus) lastFocus.focus();
     }
 
-    document.addEventListener('keydown', e => {
+    lb.addEventListener('click', function (e) {
+      if (e.target === lb) closeLightbox();
+    });
+    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeLightbox();
     });
+  })();
   </script>
 
 </body>
