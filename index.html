@@ -4,22 +4,27 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>CLOOFEN — MOTION DESIGNER</title>
-  <meta name="description" content="Cloofen — motion designer & 3D artist. Product films, CG environments and interface motion for Web3, fintech and tech brands." />
+  <title>KAMIL — CGI ARTIST</title>
+  <meta name="description" content="Kamil — CGI artist. Unreal Engine, Blender, After Effects. Selected work." />
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://cloofen-site.vercel.app/" />
-  <meta property="og:title" content="CLOOFEN — Motion Designer" />
-  <meta property="og:description" content="Product films, CG environments and interface motion. Selected work." />
+  <meta property="og:title" content="KAMIL — CGI ARTIST" />
+  <meta property="og:description" content="Unreal Engine, Blender, After Effects. Selected work." />
   <meta property="og:image" content="https://cloofen-site.vercel.app/og.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#000000" />
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%2300ffa8' text-anchor='middle'%3EC%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23000'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='bold' fill='%2300ffa8' text-anchor='middle'%3EK%3C/text%3E%3C/svg%3E" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <!-- постеры решают первый экран: они видны сразу, видео дотягивается следом -->
+  <link rel="preload" as="image" href="media/byreal.jpg" />
+  <link rel="preload" as="image" href="media/solayer.jpg" />
+  <link rel="preload" as="image" href="media/mr-stephen.jpg" />
 
   <style>
     @font-face {
@@ -42,55 +47,31 @@
       --dim: #555;
       --mono: 'Share Tech Mono', ui-monospace, 'Courier New', monospace;
       --gap: 12px;
+      --pad: clamp(16px, 3vw, 40px);
     }
 
     /* overflow-x задаём ТОЛЬКО на html — он пробрасывается на вьюпорт.
        Если продублировать его на body вместе с height:100%, body становится
-       собственным скролл-контейнером: документ перестаёт скроллиться,
-       window.scrollY всегда 0, а scroll-snap и якоря работают через раз. */
+       собственным скролл-контейнером и документ перестаёт скроллиться. */
     html {
-      height: 100%;
       overflow-x: hidden;
     }
 
     body {
-      min-height: 100%;
+      min-height: 100vh;
       background: #000;
       color: var(--fg);
       font-family: var(--mono);
     }
 
-    /* scroll-snap только на десктопе — на мобильных он залипает */
-    @media (hover: hover) and (min-width: 900px) {
-      html { scroll-snap-type: y proximity; }
-    }
-
-    body::before,
-    body::after {
+    body::before {
       content: '';
       position: fixed;
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      transition: opacity 1.6s cubic-bezier(0.4, 0, 0.2, 1);
+      background: radial-gradient(ellipse 75% 60% at 50% 18%, #001b0d 0%, #000a05 45%, #000000 78%);
     }
-
-    /* hero — радиальное свечение по центру */
-    body::before {
-      background: radial-gradient(ellipse 60% 50% at 50% 50%, #001f0e 0%, #000c06 40%, #000000 75%);
-      opacity: 1;
-    }
-
-    /* works — зелёный только по бокам, центр очень тёмный */
-    body::after {
-      background: linear-gradient(to right,
-        #001208 0%, #000602 15%, #000000 35%,
-        #000000 65%, #000602 85%, #001208 100%);
-      opacity: 0;
-    }
-
-    body.at-works::before { opacity: 0; }
-    body.at-works::after  { opacity: 1; }
 
     #bg-canvas {
       position: fixed;
@@ -99,214 +80,124 @@
       pointer-events: none;
     }
 
-    /* ─── SECTION BASE ─── */
-    section {
+    /* ─── PAGE ─── */
+    .page {
       position: relative;
       z-index: 2;
       min-height: 100vh;
-      min-height: 100svh; /* на мобильных адресная строка съедает 100vh */
-      scroll-snap-align: start;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 40px;
-    }
-
-    .section-label {
-      position: absolute;
-      top: 24px;
-      left: 24px;
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    /* ─── ENTRANCE ANIMATIONS ─── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .hero__photo-enter  { animation: fadeIn 0.8s ease forwards; animation-delay: 0.20s; opacity: 0; }
-    .hero .section-label{ animation: fadeIn 0.5s ease forwards; animation-delay: 0.30s; opacity: 0; }
-    .hero__label        { animation: fadeUp 0.5s ease forwards; animation-delay: 0.30s; opacity: 0; }
-    .hero__name         { animation: fadeUp 0.5s ease forwards; animation-delay: 0.70s; opacity: 0; }
-    .hero__meta         { animation: fadeUp 0.5s ease forwards; animation-delay: 1.00s; opacity: 0; }
-    .hero__desc         { animation: fadeUp 0.5s ease forwards; animation-delay: 1.15s; opacity: 0; }
-    .hero__tg           { animation: fadeUp 0.5s ease forwards; animation-delay: 1.30s; opacity: 0; }
-    .hero__scroll       { animation: fadeIn 0.6s ease forwards; animation-delay: 1.60s; opacity: 0; }
-
-    /* ─── HERO ─── */
-    .hero {
-      flex-direction: row;
-      gap: 80px;
-    }
-
-    .hero__logo {
-      position: absolute;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 40px;
-      width: auto;
-      opacity: 0;
-      animation: fadeIn 0.5s ease forwards;
-      animation-delay: 0.1s;
-      filter: brightness(0) invert(1) opacity(0.35);
-    }
-
-    @property --angle {
-      syntax: '<angle>';
-      initial-value: 0deg;
-      inherits: false;
-    }
-
-    @keyframes spin-border {
-      from { --angle: 0deg; }
-      to   { --angle: 360deg; }
-    }
-
-    .hero__photo-wrap {
-      position: relative;
-      width: 260px;
-      height: 320px;
-      flex-shrink: 0;
-      padding: 3px;
-      border-radius: 2px;
-      background: conic-gradient(
-        from var(--angle),
-        transparent 20%,
-        #00ffa8 40%,
-        #ffffff44 50%,
-        #00ffa8 60%,
-        transparent 80%
-      );
-      animation: spin-border 4s linear infinite;
-    }
-
-    .hero__photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-      filter: grayscale(20%);
-      display: block;
-    }
-
-    .hero__info {
+      min-height: 100svh;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 24px;
-      max-width: 480px;
+      gap: clamp(22px, 3.4vh, 34px);
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: var(--pad);
     }
 
-    .hero__label {
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .head, .works__grid, .hint {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+    .head        { animation-delay: 0.15s; }
+    .hint        { animation-delay: 0.30s; }
+    .works__grid { animation-delay: 0.40s; }
+
+    /* ─── HEAD ─── */
+    .head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px 40px;
+    }
+
+    .head__logo {
+      display: block;
+      width: 30px;
+      height: auto;
+      margin-bottom: 12px;
+      filter: brightness(0) invert(1);
+      opacity: 0.3;
+    }
+
+    .head__label {
+      display: block;
       color: var(--accent);
       font-size: 11px;
       letter-spacing: 0.2em;
       text-transform: uppercase;
     }
 
-    .hero__name {
+    .head__name {
+      margin-top: 8px;
       font-family: 'OffBit', var(--mono);
       font-weight: bold;
-      font-size: clamp(36px, 6vw, 80px);
+      font-size: clamp(38px, 6vw, 76px);
       text-transform: uppercase;
       letter-spacing: 0.05em;
       line-height: 1;
     }
 
-    .hero__meta {
+    .head__meta {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      align-items: flex-end;
+      gap: 5px;
+      text-align: right;
     }
 
-    .hero__meta span {
-      font-size: 13px;
+    .head__meta span {
+      font-size: 12px;
       color: #888;
       text-transform: uppercase;
       letter-spacing: 0.1em;
     }
 
-    .hero__meta span b {
+    .head__meta span b {
       color: var(--fg);
       font-weight: normal;
     }
 
-    .hero__desc {
-      font-size: 16px;
-      line-height: 1.7;
-      color: #aaa;
-      max-width: 380px;
-    }
-
-    .hero__tg {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 12px 28px;
+    .head__tg {
+      margin-top: 12px;
+      padding: 11px 24px;
       border: 1px solid var(--accent);
       color: var(--accent);
       text-decoration: none;
-      font-family: var(--mono);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       transition: background 0.15s, color 0.15s;
-      width: fit-content;
     }
 
-    .hero__tg:hover,
-    .hero__tg:focus-visible {
+    .head__tg:hover,
+    .head__tg:focus-visible {
       background: var(--accent);
       color: var(--bg);
       outline: none;
     }
 
-    .hero__scroll {
-      position: absolute;
-      bottom: 26px;
-      left: 50%;
-      transform: translateX(-50%);
+    .hint {
       font-size: 10px;
-      letter-spacing: 0.3em;
+      letter-spacing: 0.25em;
       text-transform: uppercase;
       color: var(--dim);
-      text-decoration: none;
+      margin-bottom: -14px;
     }
-    .hero__scroll:hover { color: var(--accent); }
 
     /* ─── WORKS ─── */
-    .works {
-      flex-direction: column;
-      gap: 28px;
-      padding: 72px 24px 60px;
-    }
-
-    .works__head {
-      width: min(1400px, calc(100vw - 48px));
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 20px;
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
     .works__grid {
-      --gw: min(1400px, calc(100vw - 48px));
+      --gw: min(1400px, calc(100vw - var(--pad) * 2));
       --cell: calc((var(--gw) - 2 * var(--gap)) / 3);
-      width: var(--gw);
+      width: 100%;
       height: calc(var(--cell) * 0.5625 * 2 + var(--gap));
-      max-height: calc(100vh - 250px);
+      max-height: calc(100vh - 300px);
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
@@ -344,7 +235,7 @@
     }
 
     .works__grid.has-hover .works__card.is-active {
-      filter: brightness(1) blur(0px);
+      filter: none;
       opacity: 1;
       border-color: #00ffa855;
     }
@@ -375,10 +266,6 @@
       transition: opacity 0.2s;
     }
 
-    .works__card:hover .works__card__label,
-    .works__card:focus-visible .works__card__label,
-    .works__card.is-active .works__card__label { opacity: 1; }
-
     .works__card__label b {
       display: block;
       font-size: 12px;
@@ -403,32 +290,19 @@
       text-overflow: ellipsis;
     }
 
-    .works__foot {
-      width: min(1400px, calc(100vw - 48px));
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 24px;
-      justify-content: space-between;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-
-    .works__foot a { color: var(--accent); text-decoration: none; }
-    .works__foot a:hover { text-decoration: underline; }
+    .works__card:hover .works__card__label,
+    .works__card:focus-visible .works__card__label,
+    .works__card.is-active .works__card__label { opacity: 1; }
 
     /* ─── LIGHTBOX ─── */
     .lightbox {
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.95);
+      background: rgba(0,0,0,0.96);
       z-index: 100;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      gap: 14px;
       padding: 40px 20px;
     }
 
@@ -436,22 +310,14 @@
 
     .lightbox video {
       max-width: 92vw;
-      max-height: 82vh;
+      max-height: 86vh;
       background: #000;
     }
 
-    .lightbox__caption {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--dim);
-    }
-    .lightbox__caption b { color: #fff; font-weight: normal; }
-
     .lightbox__close {
       position: absolute;
-      top: 20px;
-      right: 26px;
+      top: 18px;
+      right: 24px;
       font-family: var(--mono);
       font-size: 24px;
       color: #fff;
@@ -463,32 +329,20 @@
     .lightbox__close:hover { color: var(--accent); }
 
     /* ─── RESPONSIVE ─── */
-    @media (max-width: 1100px) {
-      .hero { gap: 48px; }
-    }
-
     @media (max-width: 860px) {
-      section { padding: 60px 20px; }
+      .page { justify-content: flex-start; padding-top: 40px; gap: 24px; }
 
-      .hero {
+      .head {
         flex-direction: column;
-        gap: 36px;
         align-items: flex-start;
-        justify-content: center;
-        padding-top: 84px;
+        gap: 20px;
       }
+      .head__meta { align-items: flex-start; text-align: left; }
+      .head__meta span { font-size: 11.5px; }
 
-      .hero__photo-wrap { width: 200px; height: 250px; }
-      .hero__info { max-width: none; gap: 18px; }
-      .hero__desc { font-size: 15px; }
+      .hint { display: none; }
 
-      .works { padding: 68px 16px 48px; }
-      .works__head, .works__foot { width: 100%; }
-
-      /* на тач-устройствах раскрытие сетки не работает — обычная сетка 2×3 */
       .works__grid {
-        --gw: 100%;
-        width: 100%;
         height: auto;
         max-height: none;
         grid-template-columns: 1fr 1fr;
@@ -502,17 +356,14 @@
 
     @media (max-width: 460px) {
       .works__grid { grid-template-columns: 1fr; }
-      .works__card__label b { font-size: 11px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-      .hero__photo-enter, .hero__label, .hero__name, .hero__meta,
-      .hero__desc, .hero__tg, .hero__scroll, .hero .section-label { opacity: 1; }
+      .head, .works__grid, .hint { opacity: 1; }
     }
   </style>
 </head>
@@ -520,77 +371,57 @@
 
   <canvas id="bg-canvas"></canvas>
 
-  <!-- ─── HERO ─── -->
-  <section class="hero" id="about">
-    <p class="section-label">/ about</p>
-    <img class="hero__logo" src="cloofen.png" alt="Cloofen" />
+  <main class="page">
 
-    <div class="hero__photo-enter">
-      <div class="hero__photo-wrap">
-        <img class="hero__photo" src="kamka.jpg" alt="Portrait of Cloofen" />
+    <header class="head">
+      <div>
+        <img class="head__logo" src="logo.png" alt="" />
+        <span class="head__label">/ CGI Artist</span>
+        <h1 class="head__name">Kamil</h1>
       </div>
-    </div>
 
-    <div class="hero__info">
-      <span class="hero__label">/ Motion Designer</span>
-      <h1 class="hero__name">Cloofen</h1>
-      <div class="hero__meta">
-        <span>AGE — <b>19</b></span>
-        <span>FOCUS — <b>3D / CGI, MOTION</b></span>
-        <span>BASED — <b>REMOTE, WORLDWIDE</b></span>
+      <div class="head__meta">
+        <span>AGE — <b>20</b></span>
+        <span>SOFTWARE — <b>UNREAL ENGINE, BLENDER, AFTER EFFECTS</b></span>
+        <a class="head__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">/ Write on Telegram</a>
       </div>
-      <p class="hero__desc">
-        I'm a motion designer with a background in sharp, dynamic video.
-        I help brands make their content bold, memorable and effective.
-      </p>
-      <a class="hero__tg" href="https://t.me/cloofenm" target="_blank" rel="noopener">
-        / Write on Telegram
-      </a>
-    </div>
+    </header>
 
-    <a class="hero__scroll" href="#works">↓ works</a>
-  </section>
-
-  <!-- ─── WORKS ─── -->
-  <section class="works" id="works">
-    <div class="works__head">
-      <span>/ works</span>
-      <span>06 selected — hover to expand, click to play</span>
-    </div>
+    <p class="hint">/ hover to expand — click to play</p>
 
     <div class="works__grid" id="works-grid">
 
-      <button class="works__card" type="button" data-slug="byreal" data-title="Byreal" data-meta="Product film — Bybit">
+      <button class="works__card" type="button" data-slug="byreal">
         <video src="media/byreal-preview.mp4" poster="media/byreal.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">01</span>
         <span class="works__card__label"><b>Byreal</b><i>Product film — Bybit</i></span>
       </button>
 
-      <button class="works__card" type="button" data-slug="solayer" data-title="Solayer" data-meta="Product 3D — card launch">
+      <button class="works__card" type="button" data-slug="solayer">
         <video src="media/solayer-preview.mp4" poster="media/solayer.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">02</span>
         <span class="works__card__label"><b>Solayer</b><i>Product 3D — card launch</i></span>
       </button>
 
-      <button class="works__card" type="button" data-slug="mr-stephen" data-title="Mr. Stephen" data-meta="CG environment — short film">
+      <button class="works__card" type="button" data-slug="mr-stephen">
         <video src="media/mr-stephen-preview.mp4" poster="media/mr-stephen.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">03</span>
         <span class="works__card__label"><b>Mr. Stephen</b><i>CG environment — short film</i></span>
       </button>
 
-      <button class="works__card" type="button" data-slug="sentient" data-title="Sentient" data-meta="CG world — concept & animation">
+      <button class="works__card" type="button" data-slug="sentient">
         <video src="media/sentient-preview.mp4" poster="media/sentient.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">04</span>
         <span class="works__card__label"><b>Sentient</b><i>CG world — concept &amp; animation</i></span>
       </button>
 
-      <button class="works__card" type="button" data-slug="seismic" data-title="Seismic" data-meta="Brand identity in 3D">
+      <button class="works__card" type="button" data-slug="seismic">
         <video src="media/seismic-preview.mp4" poster="media/seismic.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">05</span>
         <span class="works__card__label"><b>Seismic</b><i>Brand identity in 3D</i></span>
       </button>
 
-      <button class="works__card" type="button" data-slug="checkout" data-title="Checkout" data-meta="UI motion — interface animation">
+      <button class="works__card" type="button" data-slug="checkout">
         <video src="media/checkout-preview.mp4" poster="media/checkout.jpg" muted loop playsinline preload="metadata"></video>
         <span class="works__card__idx">06</span>
         <span class="works__card__label"><b>Checkout</b><i>UI motion — interface animation</i></span>
@@ -598,17 +429,11 @@
 
     </div>
 
-    <div class="works__foot">
-      <span>Available for freelance</span>
-      <span>Telegram — <a href="https://t.me/cloofenm" target="_blank" rel="noopener">@cloofenm</a></span>
-    </div>
-  </section>
+  </main>
 
-  <!-- ─── LIGHTBOX ─── -->
   <div class="lightbox" id="lightbox">
     <button class="lightbox__close" id="lightbox-close" type="button" aria-label="Close">✕</button>
     <video id="lightbox-video" controls playsinline></video>
-    <p class="lightbox__caption" id="lightbox-caption"></p>
   </div>
 
   <script>
@@ -643,8 +468,6 @@
         }
       }
 
-      // на resize перерисовываем не чаще кадра — иначе на мобильных
-      // адресная строка дёргает viewport и грузит CPU
       window.addEventListener('resize', function () {
         if (raf) cancelAnimationFrame(raf);
         raf = requestAnimationFrame(build);
@@ -652,17 +475,7 @@
       build();
     })();
 
-    // ─── SCROLL BACKGROUND ───
-    (function () {
-      var works = document.querySelector('.works');
-      new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          document.body.classList.toggle('at-works', e.isIntersecting);
-        });
-      }, { threshold: 0.15 }).observe(works);
-    })();
-
-    // ─── WORKS ───
+    // ─── GRID ───
     var grid  = document.getElementById('works-grid');
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.works__card'));
     var COLS  = 3, ROWS = 2;
@@ -702,13 +515,12 @@
       card.addEventListener('focus',      function () { expand(i); });
       card.addEventListener('click',      function () { openLightbox(card); });
 
-      // стрелками ходим по сетке — навигация с клавиатуры
       card.addEventListener('keydown', function (e) {
         var next = null;
-        if (e.key === 'ArrowRight') next = i + 1;
-        else if (e.key === 'ArrowLeft')  next = i - 1;
-        else if (e.key === 'ArrowDown')  next = i + COLS;
-        else if (e.key === 'ArrowUp')    next = i - COLS;
+        if (e.key === 'ArrowRight')     next = i + 1;
+        else if (e.key === 'ArrowLeft') next = i - 1;
+        else if (e.key === 'ArrowDown') next = i + COLS;
+        else if (e.key === 'ArrowUp')   next = i - COLS;
         if (next !== null && cards[next]) { e.preventDefault(); cards[next].focus(); }
       });
     });
@@ -724,8 +536,8 @@
     });
 
     // ─── PREVIEW PLAYBACK ───
-    // Десктоп: все превью крутятся. Мобильный: играет только то, что на экране —
-    // иначе шесть одновременных декодов сажают батарею и тормозят скролл.
+    // Десктоп: все превью крутятся. Мобильный: играет только видимое —
+    // шесть одновременных декодов сажают батарею и тормозят скролл.
     function play(v) {
       var p = v.play();
       if (p && p.catch) p.catch(function () {});
@@ -748,17 +560,16 @@
     // ─── LIGHTBOX ───
     var lb        = document.getElementById('lightbox');
     var lbVideo   = document.getElementById('lightbox-video');
-    var lbCaption = document.getElementById('lightbox-caption');
+    var lbClose   = document.getElementById('lightbox-close');
     var lastFocus = null;
 
     function openLightbox(card) {
       lastFocus = card;
       lbVideo.src = 'media/' + card.dataset.slug + '.mp4';
-      lbCaption.innerHTML = '<b>' + card.dataset.title + '</b> — ' + card.dataset.meta;
       lb.classList.add('active');
       videos.forEach(function (v) { v.pause(); });
       play(lbVideo);
-      document.getElementById('lightbox-close').focus();
+      lbClose.focus();
     }
 
     function closeLightbox() {
@@ -771,10 +582,8 @@
       if (lastFocus) lastFocus.focus();
     }
 
-    lb.addEventListener('click', function (e) {
-      if (e.target === lb) closeLightbox();
-    });
-    document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+    lb.addEventListener('click', function (e) { if (e.target === lb) closeLightbox(); });
+    lbClose.addEventListener('click', closeLightbox);
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') closeLightbox();
     });
