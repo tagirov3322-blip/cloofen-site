@@ -168,66 +168,41 @@
     else if (e.key === 'ArrowRight') stepLB(1);
   });
 
-  /* ─── 4. Курсор ───────────────────────────────────────────────── */
+  /* ─── 4. Плавная прокрутка по ссылкам навигации ─────────────────
+     Своя, а не CSS scroll-behavior: браузерная плавная прокрутка отдаёт
+     ScrollTrigger позицию с задержкой, из-за чего триггеры первого экрана
+     залипали в конечном состоянии и он пропадал. Здесь позиция ставится
+     напрямую каждый кадр — ST видит её честно. */
 
-  function initCursor() {
-    if (!animate) return;
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  function initSmoothLinks() {
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    var dot = document.getElementById('cur');
-    var ring = document.getElementById('curRing');
-    var label = ring.querySelector('span');
-    var gsap = window.gsap;
+    document.querySelectorAll('a[href^="#"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        var id = a.getAttribute('href').slice(1);
+        var target = document.getElementById(id);
+        if (!target) return;
+        e.preventDefault();
 
-    var xd = gsap.quickTo(dot, 'x', { duration: .12, ease: 'power3' });
-    var yd = gsap.quickTo(dot, 'y', { duration: .12, ease: 'power3' });
-    var xr = gsap.quickTo(ring, 'x', { duration: .45, ease: 'power3' });
-    var yr = gsap.quickTo(ring, 'y', { duration: .45, ease: 'power3' });
+        var from = window.scrollY;
+        var to = Math.max(0, Math.min(
+          target.getBoundingClientRect().top + from,
+          document.documentElement.scrollHeight - window.innerHeight
+        ));
+        if (reduce) { window.scrollTo(0, to); return; }
 
-    var shown = false;
-    window.addEventListener('mousemove', function (e) {
-      if (!shown) { shown = true; gsap.to([dot, ring], { opacity: 1, duration: .3 }); }
-      xd(e.clientX); yd(e.clientY); xr(e.clientX); yr(e.clientY);
-    });
+        var dist = to - from;
+        var dur = Math.min(1100, Math.max(450, Math.abs(dist) * 0.55));
+        var start = null;
 
-    document.addEventListener('mouseleave', function () {
-      shown = false; gsap.to([dot, ring], { opacity: 0, duration: .2 });
-    });
-
-    function grow(on, text) {
-      if (text) label.textContent = text;
-      gsap.to(ring, { scale: on ? 1.55 : 1, borderColor: on ? '#00ffa8' : 'rgba(255,255,255,.2)', duration: .4, ease: 'expo.out' });
-      gsap.to(label, { opacity: (on && text) ? 1 : 0, duration: .25 });
-      gsap.to(dot, { opacity: on ? 0 : 1, duration: .25 });
-    }
-
-    Array.prototype.forEach.call(grid.children, function (c) {
-      c.addEventListener('mouseenter', function () { grow(true, 'PLAY'); });
-      c.addEventListener('mouseleave', function () { grow(false); });
-    });
-    document.querySelectorAll('a, button').forEach(function (el) {
-      if (el.classList.contains('card')) return;
-      el.addEventListener('mouseenter', function () { grow(true, ''); });
-      el.addEventListener('mouseleave', function () { grow(false); });
-    });
-  }
-
-  /* Кнопки тянутся к курсору */
-  function initMagnetic() {
-    if (!animate) return;
-    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    var gsap = window.gsap;
-
-    document.querySelectorAll('.magnetic').forEach(function (el) {
-      var xTo = gsap.quickTo(el, 'x', { duration: .5, ease: 'elastic.out(1, .4)' });
-      var yTo = gsap.quickTo(el, 'y', { duration: .5, ease: 'elastic.out(1, .4)' });
-
-      el.addEventListener('mousemove', function (e) {
-        var r = el.getBoundingClientRect();
-        xTo((e.clientX - (r.left + r.width / 2)) * .38);
-        yTo((e.clientY - (r.top + r.height / 2)) * .5);
+        requestAnimationFrame(function step(now) {
+          if (start === null) start = now;
+          var p = Math.min(1, (now - start) / dur);
+          var e2 = p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+          window.scrollTo(0, from + dist * e2);
+          if (p < 1) requestAnimationFrame(step);
+        });
       });
-      el.addEventListener('mouseleave', function () { xTo(0); yTo(0); });
     });
   }
 
@@ -254,17 +229,17 @@
     /* Первый экран уезжает параллаксом */
     gsap.to('#heroMedia', {
       yPercent: 12, scale: 1.05, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6 }
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6, invalidateOnRefresh: true }
     });
     /* Отдельным триггером, потому что затухание должно закончиться
        раньше движения — к нижней кромке видео уже растворено в фон */
     gsap.to('#heroMedia', {
       opacity: 0, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: '38% top', end: 'bottom top', scrub: .6 }
+      scrollTrigger: { trigger: '.hero', start: '38% top', end: 'bottom top', scrub: .6, invalidateOnRefresh: true }
     });
     gsap.to('.hero-inner', {
       opacity: 0, yPercent: -14, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: '55% top', scrub: .6 }
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: '55% top', scrub: .6, invalidateOnRefresh: true }
     });
 
     /* Заголовки секций: линия чертится, текст расшифровывается */
@@ -320,13 +295,20 @@
       return;
     }
 
-    initCursor();
-    initMagnetic();
+    initSmoothLinks();
 
     /* Загрузчика больше нет: постер видео рисуется мгновенно и держит
        первый экран, пока подтягивается сам ролик. Ждать нечего. */
     var heroTL = initAnimations();
     if (heroTL) heroTL.play(0);
+
+    /* Метаданные ролика и шрифты приезжают после первого расчёта позиций.
+       Без пересчёта start/end триггеров уезжают относительно вёрстки. */
+    if (window.ScrollTrigger) {
+      var reel = document.getElementById('reel');
+      if (reel) reel.addEventListener('loadedmetadata', function () { window.ScrollTrigger.refresh(); }, { once: true });
+      window.addEventListener('load', function () { window.ScrollTrigger.refresh(); }, { once: true });
+    }
 
     var t;
     window.addEventListener('resize', function () {
