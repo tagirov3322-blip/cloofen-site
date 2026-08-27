@@ -59,40 +59,6 @@
     grid.appendChild(frag);
   }
 
-  /* Высота сетки считается из ширины ячейки, чтобы в покое плитки были
-     ровно 16:9, а анимация раскрытия шла по фиксированной коробке. */
-  function sizeGrid() {
-    if (!canExpand()) { grid.style.removeProperty('--grid-h'); return; }
-    var gap = parseFloat(getComputedStyle(grid).columnGap) || 12;
-    var cell = (grid.clientWidth - gap * (COLS - 1)) / COLS;
-    var rows = Math.ceil(WORKS.length / COLS);
-    grid.style.setProperty('--grid-h', (cell * 9 / 16 * rows + gap * (rows - 1)) + 'px');
-  }
-
-  function canExpand() {
-    return window.matchMedia('(min-width: 862px) and (hover: hover)').matches;
-  }
-
-  function expand(index) {
-    if (!canExpand()) return;
-    var rows = Math.ceil(WORKS.length / COLS);
-    var col = index % COLS, row = Math.floor(index / COLS);
-
-    var c = [], r = [], i;
-    for (i = 0; i < COLS; i++) c.push(i === col ? '1.6fr' : '0.7fr');
-    for (i = 0; i < rows; i++) r.push(i === row ? '1.44fr' : '0.78fr');
-
-    grid.style.gridTemplateColumns = c.join(' ');
-    grid.style.gridTemplateRows = r.join(' ');
-    grid.classList.add('dim');
-  }
-
-  function collapse() {
-    grid.style.removeProperty('grid-template-columns');
-    grid.style.removeProperty('grid-template-rows');
-    grid.classList.remove('dim');
-  }
-
   /* Превью играют только пока видимы — девять одновременных декодов
      сажают батарею и роняют fps даже на десктопе. */
   function watchPreviews() {
@@ -173,21 +139,10 @@
 
   /* ─── 3. Ввод: мышь, клавиатура ───────────────────────────────── */
 
-  var hoverTimer = null;
-
   function bindGrid() {
     Array.prototype.forEach.call(grid.children, function (card) {
       var i = parseInt(card.dataset.index, 10);
-      card.addEventListener('mouseenter', function () {
-        clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(function () { expand(i); }, 70);
-      });
-      card.addEventListener('focus', function () { clearTimeout(hoverTimer); expand(i); });
       card.addEventListener('click', function () { openLB(i); });
-    });
-    grid.addEventListener('mouseleave', function () { clearTimeout(hoverTimer); collapse(); });
-    grid.addEventListener('focusout', function (e) {
-      if (!grid.contains(e.relatedTarget)) collapse();
     });
 
     grid.addEventListener('keydown', function (e) {
@@ -276,36 +231,6 @@
     });
   }
 
-  /* ─── 5. Расшифровка текста ───────────────────────────────────── */
-
-  var GLYPHS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ#%&/\\|<>*+=';
-
-  function scramble(el, done) {
-    /* Работает только по чистому тексту: элемент с детьми (например с
-       <br>) развалился бы в одну строку. */
-    if (el.children.length) { if (done) done(); return; }
-    var final = el.dataset.text || el.textContent;
-    el.dataset.text = final;
-
-    var frame = 0, total = 26;
-    var seeds = final.split('').map(function () { return Math.floor(Math.random() * 14); });
-
-    var id = setInterval(function () {
-      el.textContent = final.split('').map(function (ch, i) {
-        if (ch === ' ') return ' ';
-        if (frame >= seeds[i] + 10) return ch;
-        if (frame >= seeds[i]) return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-        return '';
-      }).join('');
-
-      if (++frame > total) {
-        clearInterval(id);
-        el.textContent = final;
-        if (done) done();
-      }
-    }, 26);
-  }
-
   /* ─── 7. Анимации ─────────────────────────────────────────────── */
 
   function initAnimations() {
@@ -345,12 +270,12 @@
     /* Заголовки секций: линия чертится, текст расшифровывается */
     gsap.utils.toArray('.sec-head').forEach(function (head) {
       var rule = head.querySelector('.rule');
-      var h2 = head.querySelector('h2[data-scramble]');
+      var h2 = head.querySelector('h2');
       ST.create({
         trigger: head, start: 'top 82%', once: true,
         onEnter: function () {
           if (rule) gsap.to(rule, { scaleX: 1, duration: 1.1, ease: 'expo.out' });
-          if (h2) scramble(h2);
+          if (h2) gsap.from(h2, { opacity: 0, y: 22, duration: .9, ease: 'expo.out' });
         }
       });
     });
@@ -373,7 +298,7 @@
       once: true,
       onEnter: function (els) {
         gsap.to(els, {
-          opacity: 1, y: 0, duration: .95, stagger: .07, ease: 'expo.out', overwrite: true
+          opacity: 1, y: 0, duration: 1.05, stagger: .09, ease: 'expo.out', overwrite: true
         });
       }
     });
@@ -386,7 +311,6 @@
   function boot() {
     doc.dataset.booted = '1';
     buildGrid();
-    sizeGrid();
     bindGrid();
     watchPreviews();
 
@@ -408,8 +332,6 @@
     window.addEventListener('resize', function () {
       clearTimeout(t);
       t = setTimeout(function () {
-        collapse();
-        sizeGrid();
         if (window.ScrollTrigger) window.ScrollTrigger.refresh();
       }, 180);
     });

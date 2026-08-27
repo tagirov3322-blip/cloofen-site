@@ -226,18 +226,16 @@
     /* ─────────────────────────────────────────────────────────────
        8. СЕТКА РАБОТ
        ───────────────────────────────────────────────────────────── */
-    .grid {
-      display: grid; gap: var(--gap);
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      height: var(--grid-h, auto);
-      transition: grid-template-columns .85s var(--ease-soft), grid-template-rows .85s var(--ease-soft);
-    }
+    /* Плитки одного размера и не меняют его никогда. Раскрытие
+       колонки/ряда при наведении владелец снял: скачок размера читался
+       как рывок. Фокус даётся светом, а не геометрией. */
+    .grid { display: grid; gap: var(--gap); grid-template-columns: repeat(3, 1fr); }
+
     .card {
-      position: relative; overflow: hidden; border: 0; padding: 0;
-      background: var(--bg-raised); cursor: pointer; display: block;
-      font: inherit; color: inherit; text-align: left;
-      transition: filter .75s var(--ease-soft), opacity .75s var(--ease-soft);
+      position: relative; aspect-ratio: 16 / 9; overflow: hidden;
+      border: 0; padding: 0; background: var(--bg-raised);
+      cursor: pointer; display: block; font: inherit; color: inherit; text-align: left;
+      transition: opacity .6s var(--ease-soft);
     }
     .card video, .card img {
       position: absolute; inset: 0; width: 100%; height: 100%;
@@ -246,39 +244,44 @@
     .card img { z-index: 0; }
     .card video { z-index: 1; opacity: 0; transition: opacity .6s var(--ease-out); }
     .card.ready video { opacity: 1; }
+
     .card::after {
       content: ''; position: absolute; inset: 0; z-index: 2;
-      background: linear-gradient(to top, rgba(5,7,6,.86) 0%, rgba(5,7,6,.15) 46%, transparent 70%);
-      opacity: .9; transition: opacity .5s var(--ease-out);
+      background: linear-gradient(to top, rgba(5,7,6,.88) 0%, rgba(5,7,6,.18) 48%, transparent 72%);
+      transition: opacity .6s var(--ease-out);
     }
+    /* Тонкая акцентная кромка снизу — вырастает у наведённой плитки */
+    .card::before {
+      content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 2px; z-index: 4;
+      background: var(--accent); transform: scaleX(0); transform-origin: left;
+      transition: transform .6s var(--ease-out);
+    }
+    .card:hover::before, .card:focus-visible::before { transform: scaleX(1); }
+    .card:hover::after { opacity: .72; }
+
     .card-meta {
       position: absolute; z-index: 3; left: 0; right: 0; bottom: 0;
       padding: clamp(12px, 1.4vw, 20px);
       display: flex; align-items: flex-end; justify-content: space-between; gap: 12px;
     }
-    .card-meta .t { display: block; font-size: clamp(14px, .8rem + .5vw, 22px); font-weight: 600; letter-spacing: -.01em; line-height: 1.1; }
-    .card-meta .d { display: block; font-family: var(--font-display); font-size: var(--t-label);
-      letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--accent);
-      margin-top: 5px; opacity: 0; transform: translateY(6px);
-      transition: opacity .45s var(--ease-out), transform .45s var(--ease-out); }
-    .card-meta .n { font-family: var(--font-display); font-size: var(--t-label);
-      color: var(--ink-mute); letter-spacing: .1em; font-weight: 600; flex: none; }
+    .card-meta .t { display: block; font-size: clamp(15px, .82rem + .52vw, 23px);
+      font-weight: 600; letter-spacing: -.015em; line-height: 1.1; }
+    .card-meta .d { display: block; font-size: var(--t-label);
+      letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--accent);
+      margin-top: 6px; opacity: 0; transform: translateY(6px);
+      transition: opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+    .card-meta .n { font-size: var(--t-label); color: var(--ink-mute);
+      letter-spacing: .1em; font-weight: 600; flex: none; }
     .card:hover .card-meta .d, .card:focus-visible .card-meta .d { opacity: 1; transform: none; }
     .card:focus-visible { outline: 1px solid var(--accent); outline-offset: -1px; }
 
-    /* Соседи гаснут, наведённая — раскрывается. Отключается на узких экранах. */
-    @media (min-width: 862px) and (hover: hover) {
-      .grid.dim .card:not(:hover) { filter: brightness(.5) blur(1px) saturate(.75); }
-      .card:hover::after { opacity: .55; }
+    /* Соседи слегка отступают в тень — без блюра и без смены размера */
+    @media (hover: hover) {
+      .grid:hover .card:not(:hover) { opacity: .42; }
     }
-    @media (max-width: 861px) {
-      .grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: none;
-        grid-auto-rows: 1fr; height: auto !important; }
-      .card { aspect-ratio: 16 / 9; }
-    }
-    @media (max-width: 560px) {
-      .grid { grid-template-columns: 1fr; }
-    }
+
+    @media (max-width: 861px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
 
     /* ─────────────────────────────────────────────────────────────
        10. ABOUT + СИЛЬНЫЕ СТОРОНЫ
@@ -501,7 +504,7 @@
       <div class="wrap">
         <div class="sec-head">
           <span class="num">01</span>
-          <h2 data-scramble>Work</h2>
+          <h2>Work</h2>
           <i class="rule"></i>
         </div>
         <div class="grid" id="grid"><!-- карточки собирает JS из WORKS --></div>
@@ -514,7 +517,7 @@
       <div class="wrap">
         <div class="sec-head">
           <span class="num">02</span>
-          <h2 data-scramble>About</h2>
+          <h2>About</h2>
           <i class="rule"></i>
         </div>
 
@@ -544,7 +547,7 @@
       <div class="wrap" style="padding-top:0">
         <div class="sec-head">
           <span class="num">03</span>
-          <h2 data-scramble>Tools</h2>
+          <h2>Tools</h2>
           <i class="rule"></i>
         </div>
         <div class="tools">
