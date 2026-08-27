@@ -219,10 +219,7 @@
       .fromTo('#reel', { scale: 1.14 }, { scale: 1, duration: 2.4, ease: 'power2.out' }, 0)
       .to('.hero .label', { opacity: 1, duration: .8 }, .1)
       .to('h1 .line > span', { y: '0%', duration: 1.15, stagger: .085 }, .18)
-      .to('.hero .btn', { opacity: 1, y: 0, duration: .8 }, .62)
-      .to('.hero .scroll-cue', { opacity: 1, duration: .8 }, .74);
-
-    gsap.set('.hero .btn', { y: 16 });
+      .to('.hero .scroll-cue', { opacity: 1, duration: .8 }, .66);
 
     if (!ST) { doc.classList.add('reveal'); return heroTL; }
 

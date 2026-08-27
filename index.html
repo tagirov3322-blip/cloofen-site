@@ -169,7 +169,9 @@
     h1 .line > span { display: block; }
     h1 em { font-style: normal; color: var(--accent); }
 
-    .hero-foot { display: flex; align-items: flex-end; justify-content: space-between;
+    /* В подвале первого экрана осталась только подсказка Scroll —
+       кнопку владелец снял, поэтому прижимаем её вправо. */
+    .hero-foot { display: flex; align-items: flex-end; justify-content: flex-end;
       gap: 24px; flex-wrap: wrap; }
 
     .btn {
@@ -278,11 +280,12 @@
     /* Факты — четыре короткие строки, им не нужна половина экрана.
        Ширины подобраны так, чтобы текст занимал освободившуюся треть,
        которая пустовала после удаления аватарки. */
-    /* Ширина ограничена: иначе на широком мониторе колонка фактов и
-       колонка текста расползаются по краям и между ними зияет дыра. */
-    .about-grid { display: grid; max-width: 1200px;
-      grid-template-columns: minmax(0, .52fr) minmax(0, 1fr);
-      gap: clamp(28px, 4vw, 72px); align-items: start; }
+    /* Колонка фактов намеренно широкая: владельцу нужны длинные строки,
+       где метка и значение разнесены по краям, а текст за счёт этого
+       начинается правее. Не сужать. */
+    .about-grid { display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: clamp(30px, 4vw, 68px); align-items: start; }
     @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; } }
 
     .about-note { color: var(--ink-read); max-width: 62ch;
@@ -477,9 +480,6 @@
         </h1>
 
         <div class="hero-foot">
-          <a class="btn anim" href="https://t.me/cloofenm" target="_blank" rel="noopener">
-            <span>Write on Telegram</span>
-          </a>
           <p class="scroll-cue anim"><i></i> Scroll</p>
         </div>
       </div>
