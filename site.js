@@ -9,15 +9,15 @@
      Порядок в массиве = порядок в сетке. Slug должен совпадать с
      именами в media/: <slug>-preview.mp4, <slug>.mp4, <slug>.jpg    */
   var WORKS = [
-    { slug: 'byreal',     title: 'Byreal',       desc: 'Product film — Bybit' },
-    { slug: 'solayer',    title: 'Solayer',      desc: 'Product 3D — card launch' },
-    { slug: 'toby',       title: 'Toby',         desc: 'Character animation — Solana' },
-    { slug: 'mr-stephen', title: 'Mr. Stephen',  desc: 'CG environment — short film' },
-    { slug: 'sentient',   title: 'Sentient',     desc: 'CG world — concept & animation' },
-    { slug: 'radevo',     title: 'Radevo',       desc: 'CG environment — winter scene' },
-    { slug: 'mx-master',  title: 'MX Master 3S', desc: 'Product film — hardware' },
-    { slug: 'seismic',    title: 'Seismic',      desc: 'Brand identity in 3D' },
-    { slug: 'checkout',   title: 'Checkout',     desc: 'UI motion — interface animation' }
+    { slug: 'byreal',     title: 'Byreal',      desc: 'Product film — Bybit' },
+    { slug: 'solayer',    title: 'Solayer',     desc: 'Product 3D — card launch' },
+    { slug: 'bleap',      title: 'Bleap',       desc: 'Product film — fintech app' },
+    { slug: 'mr-stephen', title: 'Mr. Stephen', desc: 'CG environment — short film' },
+    { slug: 'sentient',   title: 'Sentient',    desc: 'CG world — concept & animation' },
+    { slug: 'stable',     title: 'Stable',      desc: 'Product film — CG & interface' },
+    { slug: 'noise',      title: 'Noise',       desc: 'Motion graphics — funding round' },
+    { slug: 'seismic',    title: 'Seismic',     desc: 'Brand identity in 3D' },
+    { slug: 'checkout',   title: 'Checkout',    desc: 'UI motion — interface animation' }
   ];
 
   var MARQUEE = [
