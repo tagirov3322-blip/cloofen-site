@@ -109,36 +109,6 @@
     @media (hover: none), (pointer: coarse) { .cursor, .cursor-ring { display: none; } }
 
     /* ─────────────────────────────────────────────────────────────
-       4. ИНТРО
-       ───────────────────────────────────────────────────────────── */
-    .intro {
-      position: fixed; inset: 0; z-index: 9800;
-      background: var(--bg);
-      display: grid; place-items: center;
-      grid-template-rows: 1fr auto;
-    }
-    .intro-word {
-      grid-row: 1;
-      align-self: center;
-      font-family: var(--font-mono);
-      font-size: clamp(28px, 7vw, 76px);
-      letter-spacing: .3em; text-indent: .3em;
-      color: var(--ink);
-    }
-    .intro-bar {
-      grid-row: 2;
-      width: min(320px, 62vw);
-      margin-bottom: clamp(40px, 8vh, 88px);
-      display: flex; justify-content: space-between; align-items: center;
-      font-family: var(--font-mono); font-size: var(--t-label);
-      letter-spacing: .16em; color: var(--ink-mute); text-transform: uppercase;
-    }
-    .intro-track { position: relative; flex: 1; height: 1px; margin: 0 14px; background: var(--line); }
-    .intro-fill  { position: absolute; inset: 0 auto 0 0; width: 0%; background: var(--accent); }
-    /* Если JS не отработал — интро не должно навсегда закрыть сайт */
-    html:not(.js) .intro { display: none; }
-
-    /* ─────────────────────────────────────────────────────────────
        5. ШАПКА
        ───────────────────────────────────────────────────────────── */
     header {
@@ -178,7 +148,7 @@
     .hero-media::after {
       content: ''; position: absolute; inset: 0;
       background:
-        linear-gradient(to top, var(--bg) 2%, rgba(5,7,6,.35) 45%, rgba(5,7,6,.55) 100%),
+        linear-gradient(to top, var(--bg) 0%, rgba(5,7,6,.88) 14%, rgba(5,7,6,.34) 46%, rgba(5,7,6,.55) 100%),
         linear-gradient(to right, rgba(5,7,6,.72) 0%, rgba(5,7,6,.3) 42%, transparent 68%),
         radial-gradient(ellipse 60% 50% at 50% 100%, var(--accent-glow), transparent 70%);
     }
@@ -256,13 +226,13 @@
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
       height: var(--grid-h, auto);
-      transition: grid-template-columns .62s var(--ease-out), grid-template-rows .62s var(--ease-out);
+      transition: grid-template-columns .85s var(--ease-soft), grid-template-rows .85s var(--ease-soft);
     }
     .card {
       position: relative; overflow: hidden; border: 0; padding: 0;
       background: var(--bg-raised); cursor: pointer; display: block;
       font: inherit; color: inherit; text-align: left;
-      transition: filter .55s var(--ease-out), opacity .55s var(--ease-out);
+      transition: filter .75s var(--ease-soft), opacity .75s var(--ease-soft);
     }
     .card video, .card img {
       position: absolute; inset: 0; width: 100%; height: 100%;
@@ -293,7 +263,7 @@
 
     /* Соседи гаснут, наведённая — раскрывается. Отключается на узких экранах. */
     @media (min-width: 862px) and (hover: hover) {
-      .grid.dim .card:not(:hover) { filter: brightness(.28) blur(2px) saturate(.5); }
+      .grid.dim .card:not(:hover) { filter: brightness(.5) blur(1px) saturate(.75); }
       .card:hover::after { opacity: .55; }
     }
     @media (max-width: 861px) {
@@ -304,17 +274,6 @@
     @media (max-width: 560px) {
       .grid { grid-template-columns: 1fr; }
     }
-
-    /* ─────────────────────────────────────────────────────────────
-       9. БЕГУЩАЯ СТРОКА
-       ───────────────────────────────────────────────────────────── */
-    .marquee { overflow: hidden; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-      padding: clamp(16px, 2.4vh, 28px) 0; display: flex; }
-    .marquee-row { display: flex; flex: none; gap: clamp(28px, 4vw, 64px); padding-right: clamp(28px, 4vw, 64px);
-      will-change: transform; }
-    .marquee span { font-family: var(--font-mono); font-size: clamp(13px, .7rem + .4vw, 18px);
-      letter-spacing: .2em; text-transform: uppercase; color: var(--ink-mute); white-space: nowrap; }
-    .marquee span b { color: var(--accent); font-weight: normal; }
 
     /* ─────────────────────────────────────────────────────────────
        10. ABOUT + СИЛЬНЫЕ СТОРОНЫ
@@ -351,19 +310,17 @@
        ───────────────────────────────────────────────────────────── */
     .tools { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.4vw, 18px); }
     .tool {
-      border: 1px solid var(--line); padding: clamp(16px, 2.4vh, 26px) clamp(20px, 2.6vw, 34px);
+      border: 1px solid var(--line);
+      padding: clamp(18px, 2.6vh, 30px) clamp(20px, 2.6vw, 36px);
       flex: 1 1 240px; position: relative; overflow: hidden;
-      display: flex; align-items: center; gap: clamp(14px, 1.6vw, 22px);
+      display: flex; align-items: center; gap: clamp(14px, 1.6vw, 24px);
     }
     .tool-mark { flex: none; display: block; color: var(--ink-dim);
       transition: color .5s var(--ease-out), transform .5s var(--ease-out); }
-    .tool-mark svg { display: block; width: clamp(28px, 2.4vw, 40px); height: auto; fill: currentColor; }
+    .tool-mark svg { display: block; width: clamp(26px, 2.2vw, 36px); height: auto; fill: currentColor; }
     .tool:hover .tool-mark { color: var(--accent); transform: translateY(-2px); }
-    .tool-txt { display: flex; flex-direction: column; min-width: 0; }
-    .tool .k { font-family: var(--font-mono); font-size: var(--t-label);
-      color: var(--ink-mute); letter-spacing: .18em; text-transform: uppercase; }
-    .tool .n { font-size: clamp(18px, .95rem + .7vw, 29px); font-weight: 600;
-      letter-spacing: -.025em; margin-top: 6px; }
+    .tool .n { font-size: clamp(17px, .9rem + .65vw, 27px); font-weight: 600;
+      letter-spacing: -.025em; line-height: 1.1; }
     .tool::after {
       content: ''; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
       background: var(--accent); transform: scaleX(0); transform-origin: left;
@@ -374,20 +331,60 @@
     /* ─────────────────────────────────────────────────────────────
        12. КОНТАКТ
        ───────────────────────────────────────────────────────────── */
-    .contact { text-align: center; padding: clamp(96px, 18vh, 200px) var(--gutter); }
-    .contact h2 { font-size: var(--t-h2); font-weight: 700; line-height: .95;
-      letter-spacing: -.035em; text-transform: uppercase; margin-bottom: clamp(26px, 4vh, 44px); }
-    .contact .btn { padding: 19px 38px; font-size: 14px; }
+    .contact {
+      position: relative; text-align: center; overflow: hidden;
+      padding: clamp(110px, 22vh, 240px) var(--gutter);
+      border-top: 1px solid var(--line);
+    }
+    /* Свечение под текстом — единственное тёплое пятно на странице,
+       поэтому взгляд идёт сюда. Дышит медленно, чтобы не мельтешить. */
+    .contact::before {
+      content: ''; position: absolute; left: 50%; top: 52%;
+      width: min(1000px, 120vw); aspect-ratio: 1 / .62;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse at center, rgba(0,255,168,.16), rgba(0,255,168,.05) 42%, transparent 68%);
+      pointer-events: none; animation: breathe 7s ease-in-out infinite;
+    }
+    @keyframes breathe {
+      0%, 100% { opacity: .75; transform: translate(-50%, -50%) scale(1); }
+      50%      { opacity: 1;   transform: translate(-50%, -50%) scale(1.08); }
+    }
+    .contact-inner { position: relative; z-index: 1; }
+    .contact .label { justify-content: center; margin-bottom: clamp(18px, 3vh, 30px); }
+    .contact h2 {
+      font-size: var(--t-h2); font-weight: 700; line-height: .95;
+      letter-spacing: -.035em; text-transform: uppercase;
+      margin-bottom: clamp(30px, 5vh, 54px);
+    }
+
+    .cta-row { display: flex; flex-wrap: wrap; gap: clamp(10px, 1.4vw, 18px); justify-content: center; }
+    .cta-row .btn { padding: 19px 34px; font-size: 13px; }
+
+    .btn-primary {
+      background: var(--accent); color: #04120c; border-color: var(--accent);
+      box-shadow: 0 14px 60px -14px rgba(0, 255, 168, .75);
+      transition: box-shadow .5s var(--ease-out), transform .5s var(--ease-out);
+    }
+    /* У обычной кнопки заливка наезжает на hover. У этой она уже есть,
+       поэтому ::before гасим, иначе он перекрывает текст своим цветом. */
+    .btn-primary::before { display: none; }
+    .btn-primary:hover, .btn-primary:focus-visible {
+      color: #04120c; box-shadow: 0 18px 90px -10px rgba(0, 255, 168, .95);
+    }
+
+    @media (prefers-reduced-motion: reduce) { .contact::before { animation: none; } }
 
     footer {
       border-top: 1px solid var(--line);
       padding: clamp(20px, 3vh, 32px) var(--gutter);
-      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      display: flex; justify-content: space-between; align-items: baseline;
+      gap: 16px; flex-wrap: wrap;
       font-family: var(--font-mono); font-size: var(--t-label);
       letter-spacing: .16em; text-transform: uppercase; color: var(--ink-mute);
     }
-    footer a { color: var(--ink-mute); text-decoration: none; }
-    footer a:hover { color: var(--accent); }
+    .foot-links { display: flex; gap: clamp(14px, 2vw, 28px); flex-wrap: wrap; }
+    footer a { color: var(--ink-mute); text-decoration: none; transition: color .4s var(--ease-out); }
+    footer a:hover, footer a:focus-visible { color: var(--accent); }
 
     /* ─────────────────────────────────────────────────────────────
        13. ЛАЙТБОКС
@@ -409,6 +406,27 @@
       color: var(--ink-dim); text-transform: uppercase; padding: 6px;
     }
     .lb-close:hover { color: var(--accent); }
+
+    /* Стрелки стоят снаружи видео, чтобы не перекрывать таймлайн плеера */
+    .lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 52px; height: 52px; border: 1px solid var(--line-strong);
+      background: rgba(5, 7, 6, .6); backdrop-filter: blur(6px);
+      color: var(--ink); font-size: 26px; line-height: 1; cursor: pointer;
+      display: grid; place-items: center; padding: 0 0 3px;
+      transition: border-color .4s var(--ease-out), color .4s var(--ease-out),
+                  background-color .4s var(--ease-out);
+    }
+    .lb-prev { left: clamp(-64px, -4vw, -14px); }
+    .lb-next { right: clamp(-64px, -4vw, -14px); }
+    .lb-nav:hover, .lb-nav:focus-visible {
+      border-color: var(--accent); color: var(--accent); background: rgba(5, 7, 6, .9);
+    }
+    @media (max-width: 900px) {
+      .lb-prev { left: 6px; }
+      .lb-next { right: 6px; }
+      .lb-nav { width: 42px; height: 42px; font-size: 22px; }
+    }
 
     /* ─────────────────────────────────────────────────────────────
        14. СТАРТОВЫЕ СОСТОЯНИЯ
@@ -432,14 +450,15 @@
     }
   </style>
 
-  <!-- Ставит .js синхронно, до отрисовки: иначе интро и стартовые
-       состояния успевают мигнуть. Тут же аварийный таймер — если
-       site.js упадёт, интро не должно навсегда закрыть сайт. -->
+  <!-- Ставит .js синхронно, до отрисовки: иначе стартовые состояния
+       успевают мигнуть. Тут же аварийный таймер — если site.js не
+       выполнился, страница не должна остаться пустой. -->
   <script>
     document.documentElement.classList.add('js');
     setTimeout(function () {
-      var i = document.getElementById('intro');
-      if (i && !i.dataset.done) { i.style.display = 'none'; document.documentElement.classList.add('reveal'); }
+      if (!document.documentElement.dataset.booted) {
+        document.documentElement.classList.add('reveal');
+      }
     }, 7000);
   </script>
 </head>
@@ -449,15 +468,6 @@
   <div class="vignette"></div>
   <div class="cursor" id="cur"></div>
   <div class="cursor-ring" id="curRing"><span>PLAY</span></div>
-
-  <div class="intro" id="intro">
-    <div class="intro-word" id="introWord">CLOOFEN</div>
-    <div class="intro-bar">
-      <span>loading</span>
-      <i class="intro-track"><i class="intro-fill" id="introFill"></i></i>
-      <span id="introPct">00</span>
-    </div>
-  </div>
 
   <header>
     <a href="#top" class="mark">CLOOFEN</a>
@@ -505,10 +515,6 @@
         <div class="grid" id="grid"><!-- карточки собирает JS из WORKS --></div>
       </div>
 
-      <div class="marquee" id="marquee">
-        <div class="marquee-row"></div>
-        <div class="marquee-row"></div>
-      </div>
     </section>
 
     <!-- ── О СЕБЕ ───────────────────────────────────────────────── -->
@@ -550,31 +556,45 @@
           <i class="rule"></i>
         </div>
         <div class="tools">
-          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0a12 12 0 1012 12A12 12 0 0012 0zm0 23.52A11.52 11.52 0 1123.52 12 11.52 11.52 0 0112 23.52zm7.13-9.791c-.206.997-1.126 3.557-4.06 4.942l-1.179-1.325-1.988 2a7.338 7.338 0 01-5.804-2.978 2.859 2.859 0 00.65.123c.326.006.678-.114.678-.66v-5.394a.89.89 0 00-1.116-.89c-.92.212-1.656 2.509-1.656 2.509a7.304 7.304 0 012.528-5.597 7.408 7.408 0 013.73-1.721c-1.006.573-1.57 1.507-1.57 2.29 0 1.262.76 1.109.984.923v7.28a1.157 1.157 0 00.148.256 1.075 1.075 0 00.88.445c.76 0 1.747-.868 1.747-.868V9.172c0-.6-.452-1.324-.905-1.572 0 0 .838-.149 1.484.346a5.537 5.537 0 01.387-.425c1.508-1.48 2.929-1.902 4.112-2.112 0 0-2.151 1.69-2.151 3.96 0 1.687.043 5.801.043 5.801.799.771 1.986-.342 3.059-1.441Z"/></svg></span><span class="tool-txt"><span class="k">Realtime</span><span class="n">Unreal Engine 5</span></span></div>
-          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626"/></svg></span><span class="tool-txt"><span class="k">3D / Render</span><span class="n">Blender</span></span></div>
-          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="3" width="22" height="18" rx="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><text x="12" y="15.9" text-anchor="middle" font-family="Inter Tight, Helvetica, Arial, sans-serif" font-size="8.4" font-weight="700" fill="currentColor">Ae</text></svg></span><span class="tool-txt"><span class="k">Comp / Motion</span><span class="n">After Effects</span></span></div>
+          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0a12 12 0 1012 12A12 12 0 0012 0zm0 23.52A11.52 11.52 0 1123.52 12 11.52 11.52 0 0112 23.52zm7.13-9.791c-.206.997-1.126 3.557-4.06 4.942l-1.179-1.325-1.988 2a7.338 7.338 0 01-5.804-2.978 2.859 2.859 0 00.65.123c.326.006.678-.114.678-.66v-5.394a.89.89 0 00-1.116-.89c-.92.212-1.656 2.509-1.656 2.509a7.304 7.304 0 012.528-5.597 7.408 7.408 0 013.73-1.721c-1.006.573-1.57 1.507-1.57 2.29 0 1.262.76 1.109.984.923v7.28a1.157 1.157 0 00.148.256 1.075 1.075 0 00.88.445c.76 0 1.747-.868 1.747-.868V9.172c0-.6-.452-1.324-.905-1.572 0 0 .838-.149 1.484.346a5.537 5.537 0 01.387-.425c1.508-1.48 2.929-1.902 4.112-2.112 0 0-2.151 1.69-2.151 3.96 0 1.687.043 5.801.043 5.801.799.771 1.986-.342 3.059-1.441Z"/></svg></span><span class="n">Unreal Engine 5</span></div>
+          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.51 13.214c.046-.8.438-1.506 1.03-2.006a3.424 3.424 0 0 1 2.212-.79c.85 0 1.631.3 2.211.79.592.5.983 1.206 1.028 2.005.045.823-.285 1.586-.865 2.153a3.389 3.389 0 0 1-2.374.938 3.393 3.393 0 0 1-2.376-.938c-.58-.567-.91-1.33-.865-2.152M7.35 14.831c.006.314.106.922.256 1.398a7.372 7.372 0 0 0 1.593 2.757 8.227 8.227 0 0 0 2.787 2.001 8.947 8.947 0 0 0 3.66.76 8.964 8.964 0 0 0 3.657-.772 8.285 8.285 0 0 0 2.785-2.01 7.428 7.428 0 0 0 1.592-2.762 6.964 6.964 0 0 0 .25-3.074 7.123 7.123 0 0 0-1.016-2.779 7.764 7.764 0 0 0-1.852-2.043h.002L13.566 2.55l-.02-.015c-.492-.378-1.319-.376-1.86.002-.547.382-.609 1.015-.123 1.415l-.001.001 3.126 2.543-9.53.01h-.013c-.788.001-1.545.518-1.695 1.172-.154.665.38 1.217 1.2 1.22V8.9l4.83-.01-8.62 6.617-.034.025c-.813.622-1.075 1.658-.563 2.313.52.667 1.625.668 2.447.004L7.414 14s-.069.52-.063.831zm12.09 1.741c-.97.988-2.326 1.548-3.795 1.55-1.47.004-2.827-.552-3.797-1.538a4.51 4.51 0 0 1-1.036-1.622 4.282 4.282 0 0 1 .282-3.519 4.702 4.702 0 0 1 1.153-1.371c.942-.768 2.141-1.183 3.396-1.185 1.256-.002 2.455.41 3.398 1.175.48.391.87.854 1.152 1.367a4.28 4.28 0 0 1 .522 1.706 4.236 4.236 0 0 1-.239 1.811 4.54 4.54 0 0 1-1.035 1.626"/></svg></span><span class="n">Blender</span></div>
+          <div class="tool anim"><span class="tool-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="3" width="22" height="18" rx="3.4" fill="none" stroke="currentColor" stroke-width="1.6"/><text x="12" y="15.9" text-anchor="middle" font-family="Inter Tight, Helvetica, Arial, sans-serif" font-size="8.4" font-weight="700" fill="currentColor">Ae</text></svg></span><span class="n">After Effects</span></div>
         </div>
       </div>
     </section>
 
     <!-- ── КОНТАКТ ──────────────────────────────────────────────── -->
     <section id="contact" class="contact">
-      <h2>Got a shot<br />worth making?</h2>
-      <a class="btn anim magnetic" href="https://t.me/cloofenm" target="_blank" rel="noopener">
-        <span>Write on Telegram</span>
-      </a>
+      <div class="contact-inner">
+        <p class="label anim"><i class="dot"></i> open for commissions</p>
+        <h2>Got a shot<br />worth making?</h2>
+        <div class="cta-row">
+          <a class="btn btn-primary magnetic anim" href="https://t.me/cloofenm" target="_blank" rel="noopener">
+            <span>Write on Telegram</span>
+          </a>
+          <a class="btn magnetic anim" href="mailto:cloofenCG@gmail.com">
+            <span>cloofenCG@gmail.com</span>
+          </a>
+        </div>
+      </div>
     </section>
+
   </main>
 
   <footer>
     <span>CLOOFEN — CGI Artist</span>
-    <a href="https://t.me/cloofenm" target="_blank" rel="noopener">Telegram @cloofenm</a>
+    <span class="foot-links">
+      <a href="https://t.me/cloofenm" target="_blank" rel="noopener">Telegram @cloofenm</a>
+      <a href="mailto:cloofenCG@gmail.com">cloofenCG@gmail.com</a>
+    </span>
   </footer>
 
   <!-- ── ЛАЙТБОКС ───────────────────────────────────────────────── -->
   <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Work preview">
     <div class="lb-inner">
       <button class="lb-close" id="lbClose" type="button">Close ✕</button>
+      <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Previous work">‹</button>
+      <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Next work">›</button>
       <video id="lbVideo" controls playsinline preload="none"></video>
       <div class="lb-bar"><span id="lbTitle"></span><span id="lbDesc"></span></div>
     </div>

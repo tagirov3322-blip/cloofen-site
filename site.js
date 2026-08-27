@@ -20,11 +20,6 @@
     { slug: 'checkout',   title: 'Checkout',    desc: 'UI motion — interface animation' }
   ];
 
-  var MARQUEE = [
-    'Product film', 'Character animation', 'CG environments', 'Lookdev',
-    'Lighting', 'Compositing', 'Grade', 'Realtime'
-  ];
-
   var COLS = 3;
 
   var doc = document.documentElement;
@@ -127,14 +122,32 @@
   var lbDesc = document.getElementById('lbDesc');
   var lastFocus = null;
 
-  function openLB(i) {
+  var lbIndex = 0;
+
+  function loadLB(i) {
     var w = WORKS[i];
     if (!w) return;
-    lastFocus = document.activeElement;
+    lbIndex = i;
     lbTitle.textContent = w.title;
     lbDesc.textContent = w.desc;
     lbVideo.poster = 'media/' + w.slug + '.jpg';
     lbVideo.src = 'media/' + w.slug + '.mp4';   /* грузим только по клику */
+    var p = lbVideo.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+
+  function stepLB(dir) {
+    var next = (lbIndex + dir + WORKS.length) % WORKS.length;
+    if (animate) {
+      window.gsap.fromTo(lbVideo, { opacity: .25 }, { opacity: 1, duration: .45, ease: 'power2.out' });
+    }
+    loadLB(next);
+  }
+
+  function openLB(i) {
+    if (!WORKS[i]) return;
+    lastFocus = document.activeElement;
+    loadLB(i);
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
 
@@ -146,8 +159,6 @@
       lb.style.opacity = 1;
     }
 
-    var p = lbVideo.play();
-    if (p && p.catch) p.catch(function () {});
     document.getElementById('lbClose').focus();
   }
 
@@ -162,14 +173,19 @@
 
   /* ─── 3. Ввод: мышь, клавиатура ───────────────────────────────── */
 
+  var hoverTimer = null;
+
   function bindGrid() {
     Array.prototype.forEach.call(grid.children, function (card) {
       var i = parseInt(card.dataset.index, 10);
-      card.addEventListener('mouseenter', function () { expand(i); });
-      card.addEventListener('focus', function () { expand(i); });
+      card.addEventListener('mouseenter', function () {
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(function () { expand(i); }, 70);
+      });
+      card.addEventListener('focus', function () { clearTimeout(hoverTimer); expand(i); });
       card.addEventListener('click', function () { openLB(i); });
     });
-    grid.addEventListener('mouseleave', collapse);
+    grid.addEventListener('mouseleave', function () { clearTimeout(hoverTimer); collapse(); });
     grid.addEventListener('focusout', function (e) {
       if (!grid.contains(e.relatedTarget)) collapse();
     });
@@ -187,9 +203,14 @@
   }
 
   document.getElementById('lbClose').addEventListener('click', closeLB);
+  document.getElementById('lbPrev').addEventListener('click', function () { stepLB(-1); });
+  document.getElementById('lbNext').addEventListener('click', function () { stepLB(1); });
   lb.addEventListener('click', function (e) { if (e.target === lb) closeLB(); });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && lb.classList.contains('open')) closeLB();
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLB();
+    else if (e.key === 'ArrowLeft') stepLB(-1);
+    else if (e.key === 'ArrowRight') stepLB(1);
   });
 
   /* ─── 4. Курсор ───────────────────────────────────────────────── */
@@ -285,19 +306,6 @@
     }, 26);
   }
 
-  /* ─── 6. Бегущая строка ───────────────────────────────────────── */
-
-  function initMarquee() {
-    var rows = document.querySelectorAll('.marquee-row');
-    var html = MARQUEE.map(function (t, i) {
-      return '<span>' + (i % 3 === 1 ? '<b>' + t + '</b>' : t) + '</span>';
-    }).join('');
-    rows.forEach(function (r) { r.innerHTML = html; });
-
-    if (!animate) return;
-    window.gsap.to(rows, { xPercent: -100, duration: 26, ease: 'none', repeat: -1 });
-  }
-
   /* ─── 7. Анимации ─────────────────────────────────────────────── */
 
   function initAnimations() {
@@ -320,12 +328,18 @@
 
     /* Первый экран уезжает параллаксом */
     gsap.to('#heroMedia', {
-      yPercent: 14, scale: 1.06, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true }
+      yPercent: 12, scale: 1.05, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: .6 }
+    });
+    /* Отдельным триггером, потому что затухание должно закончиться
+       раньше движения — к нижней кромке видео уже растворено в фон */
+    gsap.to('#heroMedia', {
+      opacity: 0, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: '38% top', end: 'bottom top', scrub: .6 }
     });
     gsap.to('.hero-inner', {
-      opacity: 0, yPercent: -18, ease: 'none',
-      scrollTrigger: { trigger: '.hero', start: 'top top', end: '60% top', scrub: true }
+      opacity: 0, yPercent: -14, ease: 'none',
+      scrollTrigger: { trigger: '.hero', start: 'top top', end: '55% top', scrub: .6 }
     });
 
     /* Заголовки секций: линия чертится, текст расшифровывается */
@@ -367,48 +381,14 @@
     return heroTL;
   }
 
-  /* ─── 8. Интро ────────────────────────────────────────────────── */
-
-  function runIntro(onDone) {
-    /* Помечаем сразу: дальше интро ведёт этот код, и аварийный таймер
-       из <head> (он на случай, когда site.js вообще не выполнился)
-       не должен вмешиваться в середине последовательности. */
-    intro.dataset.done = '1';
-    var word = document.getElementById('introWord');
-    var fill = document.getElementById('introFill');
-    var pct = document.getElementById('introPct');
-
-    function finish() {
-      if (!animate) { intro.style.display = 'none'; onDone(); return; }
-      window.gsap.timeline({ onComplete: function () { intro.style.display = 'none'; onDone(); } })
-        .to('.intro-word, .intro-bar', { opacity: 0, duration: .35, ease: 'power2.in' })
-        .to(intro, { yPercent: -100, duration: 1.05, ease: 'expo.inOut' }, .2);
-    }
-
-    if (!animate) { scramble(word); finish(); return; }
-
-    scramble(word);
-
-    var state = { v: 0 };
-    window.gsap.to(state, {
-      v: 100, duration: 1.7, ease: 'power2.inOut',
-      onUpdate: function () {
-        var n = Math.round(state.v);
-        fill.style.width = n + '%';
-        pct.textContent = String(n).padStart(2, '0');
-      },
-      onComplete: finish
-    });
-  }
-
   /* ─── 9. Запуск ───────────────────────────────────────────────── */
 
   function boot() {
+    doc.dataset.booted = '1';
     buildGrid();
     sizeGrid();
     bindGrid();
     watchPreviews();
-    initMarquee();
 
     if (!animate) {
       doc.classList.add('reveal');
@@ -419,12 +399,10 @@
     initCursor();
     initMagnetic();
 
+    /* Загрузчика больше нет: постер видео рисуется мгновенно и держит
+       первый экран, пока подтягивается сам ролик. Ждать нечего. */
     var heroTL = initAnimations();
-    if (heroTL) heroTL.pause(0);
-
-    runIntro(function () {
-      if (heroTL) heroTL.play(0);
-    });
+    if (heroTL) heroTL.play(0);
 
     var t;
     window.addEventListener('resize', function () {
