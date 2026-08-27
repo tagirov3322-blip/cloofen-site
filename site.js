@@ -244,12 +244,10 @@
 
     /* Заголовки секций: линия чертится, текст расшифровывается */
     gsap.utils.toArray('.sec-head').forEach(function (head) {
-      var rule = head.querySelector('.rule');
       var h2 = head.querySelector('h2');
       ST.create({
         trigger: head, start: 'top 82%', once: true,
         onEnter: function () {
-          if (rule) gsap.to(rule, { scaleX: 1, duration: 1.1, ease: 'expo.out' });
           if (h2) gsap.from(h2, { opacity: 0, y: 22, duration: .9, ease: 'expo.out' });
         }
       });
