@@ -27,8 +27,7 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var animate = hasGSAP && !reduced;
 
-  var grid   = document.getElementById('grid');
-  var intro  = document.getElementById('intro');
+  var grid = document.getElementById('grid');
 
   /* ─── 1. Сетка работ ──────────────────────────────────────────── */
 
@@ -168,6 +167,52 @@
     else if (e.key === 'ArrowRight') stepLB(1);
   });
 
+  /* ─── 4. Копирование почты ────────────────────────────────────── */
+
+  function initCopyMail() {
+    var btn = document.getElementById('copyMail');
+    if (!btn) return;
+    var hint = document.getElementById('copyHint');
+    var idle = hint.textContent;
+    var timer = null;
+
+    function fallback(text) {
+      /* clipboard API живёт только на https и localhost — на голом http
+         нужен старый путь через скрытое поле */
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      return ok;
+    }
+
+    function done(ok) {
+      hint.textContent = ok ? 'Copied' : 'Press Ctrl+C';
+      btn.classList.add('copied');
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        btn.classList.remove('copied');
+        setTimeout(function () { hint.textContent = idle; }, 300);
+      }, 1600);
+    }
+
+    btn.addEventListener('click', function () {
+      var mail = btn.dataset.mail;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mail)
+          .then(function () { done(true); })
+          .catch(function () { done(fallback(mail)); });
+      } else {
+        done(fallback(mail));
+      }
+    });
+  }
+
   /* ─── 4. Плавная прокрутка по ссылкам навигации ─────────────────
      Своя, а не CSS scroll-behavior: браузерная плавная прокрутка отдаёт
      ScrollTrigger позицию с задержкой, из-за чего триггеры первого экрана
@@ -284,13 +329,15 @@
     bindGrid();
     watchPreviews();
 
+    /* Прокрутка и копирование почты — не украшения: они обязаны работать
+       и при отключённых анимациях, поэтому идут ДО раннего выхода. */
+    initSmoothLinks();
+    initCopyMail();
+
     if (!animate) {
       doc.classList.add('reveal');
-      if (intro) { intro.dataset.done = '1'; intro.style.display = 'none'; }
       return;
     }
-
-    initSmoothLinks();
 
     /* Загрузчика больше нет: постер видео рисуется мгновенно и держит
        первый экран, пока подтягивается сам ролик. Ждать нечего. */
