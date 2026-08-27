@@ -136,11 +136,16 @@ CLOOFEN                                  WORK  ABOUT  CONTACT   ← fixed, mix-b
 01 WORK ─────  сетка 3×3, hover раскрывает, клик — лайтбокс
 02 ABOUT ────  строка фактов + три абзаца
 03 TOOLS ────  Unreal Engine 5 · Blender · After Effects
-   CONTACT ──  Got a shot worth making? + Telegram и почта
+   CONTACT ──  Contact me + Telegram и почта
 ```
 
-**Кнопки в финале меняют подпись при наведении.** Telegram: `Message me` →
-`@cloofenm`. Почта: адрес → `Click to copy`, по клику копируется в буфер и на
+Заголовок финальной секции — `Contact me`. До этого был `Got a shot worth
+making?`; владелец сказал, что не понимает фразу, и попросил просто и в лоб.
+Он предлагал `Contact us` — **множественное число тут нельзя**: весь сайт
+построен на том, что работу делает один человек, «us» намекало бы на агентство.
+
+**Кнопки в финале меняют подпись при наведении.** Telegram: `Write on Telegram`
+→ `@cloofenm`. Почта: адрес → `Click to copy`, по клику копируется в буфер и на
 1,6 с показывает `Copied`. Обе подписи лежат в одной ячейке `inline-grid`,
 поэтому ширина считается по длинной и кнопка не прыгает.
 
