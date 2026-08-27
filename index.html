@@ -279,8 +279,15 @@
       max-width: 22ch; font-weight: 500; }
     .lead em { font-style: normal; color: var(--accent); }
 
-    .about-grid { display: grid; grid-template-columns: minmax(0, .88fr) minmax(0, 1.12fr);
+    .about-grid { display: grid;
+      grid-template-columns: minmax(0, .82fr) minmax(0, 1fr) minmax(120px, .4fr);
       gap: clamp(30px, 4vw, 68px); align-items: start; }
+    @media (max-width: 980px) {
+      .about-grid { grid-template-columns: minmax(0, .9fr) minmax(0, 1fr); }
+      .signature { grid-column: 1 / -1; flex-direction: row; align-items: center;
+        gap: clamp(14px, 1.5vw, 20px); margin-top: clamp(8px, 2vh, 20px); }
+      .signature img { width: clamp(76px, 9vw, 104px); }
+    }
     @media (max-width: 820px) { .about-grid { grid-template-columns: 1fr; } }
 
     .about-note { color: var(--ink-read); max-width: 47ch;
@@ -289,15 +296,13 @@
     .about-note strong { color: var(--ink); font-weight: 600; }
 
     /* Строка фактов под лид-фразой */
-    .signature {
-      display: flex; align-items: center; gap: clamp(14px, 1.5vw, 20px);
-      margin-top: clamp(30px, 4.5vh, 52px);
-    }
+    .signature { display: flex; flex-direction: column; align-items: flex-start;
+      gap: clamp(12px, 1.6vh, 18px); }
     .signature img {
       /* height: auto обязателен: у <img> есть атрибут height="360",
          он приходит презентационной подсказкой и перебивает aspect-ratio,
          из-за чего круг растягивался в вертикальный овал. */
-      width: clamp(58px, 5vw, 76px); height: auto; aspect-ratio: 1;
+      width: clamp(104px, 10vw, 168px); height: auto; aspect-ratio: 1;
       border-radius: 50%; object-fit: cover; display: block; flex: none;
       /* Фото студийное, на белом — на чёрном фоне круг светит,
          поэтому гасим по краю кольцом и слегка приглушаем. */
@@ -543,15 +548,16 @@
             <p class="anim">The key difference is having <strong>both 2D and 3D skills under one roof</strong>. There’s no need to assemble a team of three contractors and coordinate them.</p>
             <p class="anim">I use neural networks where necessary. Having grown up in an era when AI-generated content didn’t exist, <strong>I learnt all the skills manually</strong>, which allows me to achieve a higher-quality result.</p>
 
-            <figure class="signature anim">
-              <img src="media/avatar.jpg" alt="Kamil" width="360" height="360"
-                   loading="lazy" decoding="async" />
-              <figcaption>
-                <span class="sig-name">Kamil</span>
-                <span class="sig-role">CGI Artist</span>
-              </figcaption>
-            </figure>
           </div>
+
+          <figure class="signature anim">
+            <img src="media/avatar.jpg" alt="Kamil" width="360" height="360"
+                 loading="lazy" decoding="async" />
+            <figcaption>
+              <span class="sig-name">Kamil</span>
+              <span class="sig-role">CGI Artist</span>
+            </figcaption>
+          </figure>
         </div>
       </div>
     </section>
