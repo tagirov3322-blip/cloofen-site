@@ -17,7 +17,7 @@
     { slug: 'stable',     title: 'Stable',      desc: 'Product film — CG & interface' },
     { slug: 'noise',      title: 'Noise',       desc: 'Motion graphics — funding round' },
     { slug: 'seismic',    title: 'Seismic',     desc: 'Brand identity in 3D' },
-    { slug: 'checkout',   title: 'Checkout',    desc: 'UI motion — interface animation' }
+    { slug: 'checkout',   title: 'Stripe',      desc: 'UI motion — interface animation' }
   ];
 
   var COLS = 3;
