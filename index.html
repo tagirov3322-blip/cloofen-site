@@ -18,17 +18,25 @@
   <link rel="icon" href="favicon.png" type="image/png" sizes="any" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <!-- ШРИФТ — ВРЕМЕННЫЙ, ждём свой от владельца.
-       Меняется в двух местах: этот <link> и переменная --font-display ниже.
-       Моноширинного на сайте нет: владелец снял его везде 27.08.2026. -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- ШРИФТ ЛЕЖИТ В РЕПОЗИТОРИИ, а не на Google Fonts. Причина та же, что
+       и у GSAP: у части российских провайдеров прямой TLS к gstatic.com не
+       проходит, и сайт открывался бы системным Arial. 45 КБ, вариативный,
+       закрывает все начертания 400–800. Меняется в двух местах:
+       @font-face ниже и переменная --font-display. -->
+  <link rel="preload" href="fonts/inter-tight-latin.woff2" as="font" type="font/woff2" crossorigin />
 
   <link rel="preload" as="video" href="media/reel.mp4" type="video/mp4" />
   <link rel="preload" as="image" href="media/reel.jpg" />
 
   <style>
+    @font-face {
+      font-family: 'Inter Tight';
+      font-style: normal;
+      font-weight: 400 800;   /* вариативный: одно начертание на весь диапазон */
+      font-display: swap;
+      src: url('fonts/inter-tight-latin.woff2') format('woff2');
+    }
+
     /* ─────────────────────────────────────────────────────────────
        1. ТОКЕНЫ
        ───────────────────────────────────────────────────────────── */
@@ -590,7 +598,7 @@
   <!-- ── ЛАЙТБОКС ───────────────────────────────────────────────── -->
   <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Work preview">
     <div class="lb-inner">
-      <button class="lb-close" id="lbClose" type="button">Close ✕</button>
+      <button class="lb-close" id="lbClose" type="button">Close ×</button>
       <button class="lb-nav lb-prev" id="lbPrev" type="button" aria-label="Previous work">‹</button>
       <button class="lb-nav lb-next" id="lbNext" type="button" aria-label="Next work">›</button>
       <video id="lbVideo" controls playsinline preload="none"></video>
