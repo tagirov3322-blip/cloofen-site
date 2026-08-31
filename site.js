@@ -58,25 +58,44 @@
     grid.appendChild(frag);
   }
 
-  /* Превью играют только пока видимы — девять одновременных декодов
-     сажают батарею и роняют fps даже на десктопе. */
+  /* Одновременно играет не больше MAX превью.
+     Раньше запускались все видимые сразу: на десктопе сетка 3×3 влезает
+     в экран целиком, и девять декодеров H.264 работали параллельно —
+     слабые машины на этом захлёбывались. Остальные карточки показывают
+     постер или замерший кадр, разницы на глаз почти нет. */
   function watchPreviews() {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        var card = e.target, v = card.querySelector('video');
+    var cards = Array.prototype.slice.call(grid.children);
+    var MAX = window.matchMedia('(pointer: coarse)').matches ? 2 : 4;
+    var visible = [];
+
+    function apply() {
+      cards.forEach(function (card) {
+        var v = card.querySelector('video');
         if (!v) return;
-        if (e.isIntersecting) {
+        var i = visible.indexOf(card);
+        if (i > -1 && i < MAX) {
           if (v.preload !== 'auto') v.preload = 'auto';
-          var p = v.play();
-          if (p && p.catch) p.catch(function () { /* автоплей может быть запрещён */ });
-          v.addEventListener('playing', function () { card.classList.add('ready'); }, { once: true });
-        } else {
-          v.pause();
+          if (v.paused) {
+            v.addEventListener('playing', function () { card.classList.add('ready'); }, { once: true });
+            var pr = v.play();
+            if (pr && pr.catch) pr.catch(function () { /* автоплей может быть запрещён */ });
+          }
+        } else if (!v.paused) {
+          v.pause();   /* класс ready не снимаем: пусть остаётся замерший кадр */
         }
       });
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var i = visible.indexOf(e.target);
+        if (e.isIntersecting && i === -1) visible.push(e.target);
+        else if (!e.isIntersecting && i > -1) visible.splice(i, 1);
+      });
+      apply();
     }, { threshold: 0.25 });
 
-    Array.prototype.forEach.call(grid.children, function (c) { io.observe(c); });
+    cards.forEach(function (c) { io.observe(c); });
   }
 
   /* ─── 2. Лайтбокс ─────────────────────────────────────────────── */

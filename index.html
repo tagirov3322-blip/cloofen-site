@@ -116,7 +116,10 @@
       position: fixed; top: 0; left: 0; right: 0; z-index: 8000;
       display: flex; align-items: center; justify-content: space-between;
       padding: clamp(16px, 2.4vh, 26px) var(--gutter);
-      mix-blend-mode: difference;
+      /* mix-blend-mode здесь БЫЛ и был снят: шапка зафиксирована поверх
+         играющего видео, и режим наложения заставлял браузер пересчитывать
+         её композицию каждый кадр. На слабых машинах сайт из-за этого
+         подтормаживал. Белый текст поверх затемнённого видео читается и так. */
     }
     .mark {
       font-family: var(--font-display); font-size: 14px;
