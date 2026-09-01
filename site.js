@@ -201,7 +201,7 @@
     if (window.matchMedia('(pointer: coarse)').matches) return null;
 
     var l = new window.Lenis({
-      lerp: 0.05,
+      lerp: 0.06,
       wheelMultiplier: 0.8,
       smoothWheel: true
     });
