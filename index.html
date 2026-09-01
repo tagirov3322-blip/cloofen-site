@@ -580,11 +580,6 @@
             <span class="lbl-idle">Write on Telegram</span>
             <span class="lbl-alt">@cloofenm</span>
           </a>
-          <button type="button" class="btn btn-swap anim" id="copyMail"
-                  data-mail="cloofenCG@gmail.com" aria-label="Copy email address">
-            <span class="lbl-idle">cloofenCG@gmail.com</span>
-            <span class="lbl-alt" id="copyHint">Click to copy</span>
-          </button>
         </div>
       </div>
     </section>
@@ -595,7 +590,6 @@
     <span>CLOOFEN — CGI Artist</span>
     <span class="foot-links">
       <a href="https://t.me/cloofenm" target="_blank" rel="noopener">Telegram @cloofenm</a>
-      <a href="mailto:cloofenCG@gmail.com">cloofenCG@gmail.com</a>
     </span>
   </footer>
 
@@ -613,6 +607,7 @@
   <!-- GSAP лежит в репозитории, а не на CDN: у части российских
        провайдеров прямой TLS к cdn.jsdelivr.net не проходит, и сайт
        оставался бы вообще без анимаций. 115 КБ, отдаёт Vercel. -->
+  <script src="vendor/lenis.min.js" defer></script>
   <script src="vendor/gsap.min.js" defer></script>
   <script src="vendor/ScrollTrigger.min.js" defer></script>
   <script defer src="site.js"></script>

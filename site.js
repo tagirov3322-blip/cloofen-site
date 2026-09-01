@@ -28,6 +28,7 @@
   var animate = hasGSAP && !reduced;
 
   var grid = document.getElementById('grid');
+  var lenis = null;   /* инерционный скролл, ставится в boot() */
 
   /* ─── 1. Сетка работ ──────────────────────────────────────────── */
 
@@ -134,6 +135,7 @@
     loadLB(i);
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
+    if (lenis) lenis.stop();
 
     if (animate) {
       window.gsap.fromTo(lb, { opacity: 0 }, { opacity: 1, duration: .32, ease: 'power2.out' });
@@ -152,6 +154,7 @@
     lbVideo.removeAttribute('src');   /* снимаем src, иначе видео качается в фоне */
     lbVideo.load();
     document.body.style.overflow = '';
+    if (lenis) lenis.start();
     if (lastFocus) lastFocus.focus();
   }
 
@@ -186,50 +189,34 @@
     else if (e.key === 'ArrowRight') stepLB(1);
   });
 
-  /* ─── 4. Копирование почты ────────────────────────────────────── */
+  /* ─── 4. Инерционный скролл ───────────────────────────────────
+     Тяжёлый ход колеса: страница догоняет курсор с запаздыванием.
+     lerp — главный параметр: чем меньше, тем тяжелее и медленнее.
 
-  function initCopyMail() {
-    var btn = document.getElementById('copyMail');
-    if (!btn) return;
-    var hint = document.getElementById('copyHint');
-    var idle = hint.textContent;
-    var timer = null;
+     На тач-устройствах НЕ включаем: там своя системная инерция, и
+     подменять её значит драться с операционкой — получается «мыло».  */
 
-    function fallback(text) {
-      /* clipboard API живёт только на https и localhost — на голом http
-         нужен старый путь через скрытое поле */
-      var ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.cssText = 'position:fixed;top:-1000px;opacity:0';
-      document.body.appendChild(ta);
-      ta.select();
-      var ok = false;
-      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
-      document.body.removeChild(ta);
-      return ok;
-    }
+  function initSmoothScroll() {
+    if (!animate || !window.Lenis) return null;
+    if (window.matchMedia('(pointer: coarse)').matches) return null;
 
-    function done(ok) {
-      hint.textContent = ok ? 'Copied' : 'Press Ctrl+C';
-      btn.classList.add('copied');
-      clearTimeout(timer);
-      timer = setTimeout(function () {
-        btn.classList.remove('copied');
-        setTimeout(function () { hint.textContent = idle; }, 300);
-      }, 1600);
-    }
-
-    btn.addEventListener('click', function () {
-      var mail = btn.dataset.mail;
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(mail)
-          .then(function () { done(true); })
-          .catch(function () { done(fallback(mail)); });
-      } else {
-        done(fallback(mail));
-      }
+    var l = new window.Lenis({
+      lerp: 0.075,
+      wheelMultiplier: 0.9,
+      smoothWheel: true
     });
+
+    /* Крутим Lenis тикером GSAP, а не собственным requestAnimationFrame.
+       Два независимых цикла расходятся по фазе, и параллакс первого
+       экрана начинает мелко дрожать. */
+    window.gsap.ticker.add(function (t) { l.raf(t * 1000); });
+    window.gsap.ticker.lagSmoothing(0);
+
+    /* Без этого ScrollTrigger не узнаёт о сглаженной позиции и триггеры
+       залипают — ровно та же поломка, что была от CSS scroll-behavior. */
+    if (window.ScrollTrigger) l.on('scroll', window.ScrollTrigger.update);
+
+    return l;
   }
 
   /* ─── 4. Плавная прокрутка по ссылкам навигации ─────────────────
@@ -247,6 +234,8 @@
         var target = document.getElementById(id);
         if (!target) return;
         e.preventDefault();
+
+        if (lenis) { lenis.scrollTo(target, { offset: 0 }); return; }
 
         var from = window.scrollY;
         var to = Math.max(0, Math.min(
@@ -351,7 +340,6 @@
     /* Прокрутка и копирование почты — не украшения: они обязаны работать
        и при отключённых анимациях, поэтому идут ДО раннего выхода. */
     initSmoothLinks();
-    initCopyMail();
 
     if (!animate) {
       doc.classList.add('reveal');
@@ -362,6 +350,8 @@
        первый экран, пока подтягивается сам ролик. Ждать нечего. */
     var heroTL = initAnimations();
     if (heroTL) heroTL.play(0);
+
+    lenis = initSmoothScroll();
 
     /* Метаданные ролика и шрифты приезжают после первого расчёта позиций.
        Без пересчёта start/end триггеров уезжают относительно вёрстки. */
